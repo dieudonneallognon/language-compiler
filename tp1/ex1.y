@@ -139,7 +139,8 @@ type :
 /* ---- Langage de traitement de la définition du fontion ---- */
 deffun :
  type ID 	{
-	 
+
+			 
 			// Vérification de l'unicité de l'identifiant de la fonction
 				funDef = search_symbol_table($2);
 				if (funDef != NULL) {
@@ -157,19 +158,18 @@ deffun :
 				printf(
 					"; Saut à fin définition %s()\n"
 					"\tconst dx,"FUN_DEF_FIN":%s\n"
-					"\tjmp dx\n",
+					"\tjmp dx\n\n",
 				funDef->name,
 				funDef->name);
-				
-			} '(' largV ')' {
 
-				printf(":"FUN_DEF":%s\n", $2);
+			} '(' largV ')' {
+					printf(":"FUN_DEF":%s\n", $2);
 
 				for (int i = funDef->nParams; i > 0 ; i--) {
 					printf(
-						"; Code saut à l'initialisation du paramètre %d de %s()\n"
+						"; Saut à l'initialisation du paramètre %d de %s()\n"
 						"\tconst dx,"VAR_PARAM_INIT":%s:%d\n"
-						"\tjmp dx\n"
+						"\tjmp dx\n\n"
 						":"VAR_PARAM_INIT_FIN":%s:%d\n",
 					i, funDef->name,
 					funDef->name, i,
@@ -177,19 +177,19 @@ deffun :
 					);
 				}
 				printf(
-					"; Début de l'exécution du code de %s()\n",
+					"; Début de l'exécution de %s()\n",
 				funDef->name);
 
 			} blocinstr {
 
 			/* Fin de traitement de la définition de la fonction donc
 			 libération  des ressources */
-				for(int i = 0; i < funDef->nParams; i++){
+				for (int i = 0; i < funDef->nParams; i++){
 					free_first_symbol_table_entry();
 				}
 				printf(
 					"; Saut à la fin de l'exécution du code de %s()\n"
-					":fun:def:fin:%s\n",
+					":"FUN_DEF_FIN":%s\n",
 				funDef->name,
 				funDef->name);
 				funDef = NULL;
@@ -223,17 +223,17 @@ largs :
 
 						printf(
 							"; Code de définition et d'initialisation du paramètre %s de %s()\n"
-							":"VAR_PARAM_INIT":%s:%lu \n"
-							"\tconst ax,"VAR_PARAM_VAL":%s:%s\n"
-							"\tjmp ax\n"
-							":"VAR_PARAM":%s:%s\n"
+							":"VAR_PARAM_INIT":%s:%lu\n"
+							"\tconst ax,"VAR_LOCAL_VAL":%s:%s\n"
+							"\tjmp ax\n\n"
+							":"VAR_LOCAL":%s:%s\n"
 							"@int 0\n"
-							":"VAR_PARAM_VAL":%s:%s\n"
+							":"VAR_LOCAL_VAL":%s:%s\n"
 							"\tpop ax\n"
-							"\tconst bx,"VAR_PARAM":%s:%s\n"
+							"\tconst bx,"VAR_LOCAL":%s:%s\n"
 							"\tstorew ax,bx\n"
-							"\tconst dx,"VAR_PARAM_INIT_FIN":%s:%lu\n"
-							"\tjmp dx\n",
+							"\tconst cx,"VAR_PARAM_INIT_FIN":%s:%lu\n"
+							"\tjmp cx\n\n",
 						$2, funDef->name,
 						funDef->name, funDef->nParams,
 						funDef->name, $2,
@@ -266,16 +266,16 @@ largs :
 						printf(
 							"; Code de définition du paramètre %s de %s()\n"
 							":"VAR_PARAM_INIT":%s:%lu\n"
-							"\tconst ax,"VAR_PARAM_VAL":%s:%s\n"
-							"\tjmp ax\n"
-							":"VAR_PARAM":%s:%s\n"
-							"@int 0\n\n"
-							":"VAR_PARAM_VAL":%s:%s\n"
+							"\tconst ax,"VAR_LOCAL_VAL":%s:%s\n"
+							"\tjmp ax\n\n"
+							":"VAR_LOCAL":%s:%s\n"
+							"@int 0\n"
+							":"VAR_LOCAL_VAL":%s:%s\n"
 							"\tpop ax\n"
-							"\tconst bx,"VAR_PARAM":%s:%s\n"
+							"\tconst bx,"VAR_LOCAL":%s:%s\n"
 							"\tstorew ax,bx\n"
 							"\tconst dx,"VAR_PARAM_INIT_FIN":%s:%lu\n"
-							"\tjmp dx",
+							"\tjmp dx\n\n",
 						$4, funDef->name,
 						funDef->name, funDef->nParams,
 						funDef->name, $4,
@@ -321,7 +321,7 @@ sinstr :
 
 lexpr :
   expr			{ $$ = 1;  }
-| lexpr  expr	{ $$ = $1 + 1;}
+| lexpr ','  expr	{ $$ = $1 + 1;}
 ;
 
 lexprV :
@@ -353,8 +353,9 @@ instr:
 								fail_with("Espace global, retour de valeur impossible !");
 								$$ = ERR;
 							} else {
-								if ((funDef->desc[0] == INT_T && $2 != T_INT)
-									|| (funDef->desc[0] == BOOL_T && $2 != T_BOOL)) {
+								if (   (funDef->desc[0] == INT_T && $2 != T_INT)
+									|| (funDef->desc[0] == BOOL_T && $2 != T_BOOL)
+									|| (funDef->desc[0] == VOID_T)) {
 										fail_with("Types de retour incompatible !");
 										$$ = ERR;
 								} else {
@@ -365,18 +366,21 @@ instr:
 					}
 
 | expr ';'			{
- 					if ($1 != ERR){
- 						printf("\tpop\n");
- 					}
- 				}
+						if ($1 != ERR){
+							printf("\tpop\n");
+						}
+					}
 | ID '=' expr ';'		{
 					symbol_table_entry* ste = search_symbol_table($1);
+
 					if(ste == NULL){
 						fail_with("ID n'existe pas");
 					}
+
 					if( (ste->desc[0] == INT_T && $3 != T_INT) || (ste->desc[0] == BOOL_T && $3 != T_BOOL)){
 						fail_with("Type incompatible");
 					}
+
 					printf("; Code affectation variable %s\n"
 					"\tpop ax\n"
 					"\tconst bx,"VAR_GLOBAL":%s\n"
@@ -387,7 +391,7 @@ instr:
 | IF '(' expr fixif ')' instr ELSE {
 					printf(";si if No %d vrai et instr executé\n"
 					"\tconst ax,if:fin:%d\n"
-					"\tjmp ax\n"
+					"\tjmp ax\n\n"
 					";si if No %d est faux\n"
 					":if:test:neg:%d\n"
 					, $<entier>4, $<entier>4, $<entier>4, $<entier>4);
@@ -419,7 +423,7 @@ instr:
 						if( $4 != T_BOOL ){ fail_with("condition non booléenne\n");}
 						printf("; fin tour de boucle\n"
 						"\tconst cx,debut:while:%u\n"
-						"\tjmp cx\n"
+						"\tjmp cx\n\n"
 						":fin:while:%u\n", $<entier>3, $<entier>3);
 							}
 | PRINT expr ';'		{
@@ -449,7 +453,7 @@ instr:
 							"\tconst cx,"BOOL_STR_FALSE"\n"
 							"\tcallprintfs cx\n"
 							"\tconst cx,%s\n"
-							"\tjmp cx\n"
+							"\tjmp cx\n\n"
 							"; Saut à "PRINT_FIN"\n\n"
 						// PRINT_TRUE
 							"; Code cible "PRINT_TRUE"\n"
@@ -492,7 +496,7 @@ decl:
 									printf(
 										"; Code nouvelle variable locale (%s, %s)\n"
 										"\tconst ax,"VAR_LOCAL_VAL":%s:%s\n"
-										"\tjmp ax\n"
+										"\tjmp ax\n\n"
 										"; Saut à "VAR_LOCAL_VAL"\n\n"
 										":"VAR_LOCAL":%s:%s\n"
 										"@int 0\n\n"
@@ -512,7 +516,7 @@ decl:
 									printf(
 										"; Code nouvelle variable globale %s\n"
 										"\tconst ax,"VAR_GLOBAL_VAL":%s\n"
-										"\tjmp ax\n"
+										"\tjmp ax\n\n"
 										"; Saut à "VAR_GLOBAL_VAL"\n\n"
 										":"VAR_GLOBAL":%s\n"
 										"@int 0\n\n"
@@ -707,7 +711,7 @@ expr	 :
 									"\tconst dx,0\n"
 									"\tpush dx\n"
 									"\tconst cx,%s\n"
-									"\tjmp cx\n"
+									"\tjmp cx\n\n"
 									";Saut à "EQ_FIN"\n"
 								//EQ_VRAI
 									"; Code cible "EQ_VRAI"\n"
@@ -977,7 +981,7 @@ expr	 :
 										"\tconst bx,0\n"
 										"\tpush bx\n"
 										"\tconst dx,%s\n"
-										"\tjmp dx\n"
+										"\tjmp dx\n\n"
 									// OR_VRAI
 										"; Code cible "OR_VRAI"\n"
 										":%s\n"
@@ -1020,7 +1024,7 @@ expr	 :
 									"; Code cible "NEG_FAUX"\n"
 									"\tpush bx\n"
 									"\tconst cx,%s\n"
-									"\tjmp cx\n"
+									"\tjmp cx\n\n"
 									"; Saut  à "NEG_FIN"\n"
 								// NEG VRAI
 									"; Code cible "NEG_VRAI"\n"
@@ -1144,7 +1148,7 @@ int main (int argc, char** argv){
 	printf(
 		"; Calculette\n"
 		"\tconst ax,"PROGRAM_START"\n"
-		"\tjmp ax\n"
+		"\tjmp ax\n\n"
 		":"PROGRAM_START"\n"
 		"; Préparation de la pile\n"
 		"\tconst bp,pile\n"
