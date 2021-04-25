@@ -1,0 +1,1800 @@
+State 26 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: lignes $end
+
+    1 lignes: lignes error '\n'
+    2       | ligne error '\n'
+    3       | error '\n'
+    4       | lignes ligne '\n'
+    5       | lignes '\n'
+    6       | ligne '\n'
+    7       | '\n'
+
+    8 ligne: instr
+    9      | decl
+   10      | deffun
+
+   11 fixif: %empty
+
+   12 type: BOOL_LEX
+   13     | INT_LEX
+   14     | VOID_LEX
+
+   15 $@1: %empty
+
+   16 $@2: %empty
+
+   17 deffun: type ID $@1 '(' largV ')' $@2 blocinstr
+
+   18 largV: %empty
+   19      | largs
+
+   20 largs: type ID
+   21      | largs ',' type ID
+
+   22 blocinstr: '{' sdeclV sinstrV '}'
+
+   23 sdeclV: %empty
+   24       | sdecl
+
+   25 sdecl: decl
+   26      | sdecl decl
+
+   27 sinstrV: %empty
+   28        | sinstr
+
+   29 sinstr: instr
+   30       | sinstr instr
+
+   31 lexpr: expr
+   32      | lexpr expr
+
+   33 lexprV: %empty
+   34       | lexpr
+
+   35 instr: blocinstr
+   36      | RETURN ';'
+   37      | RETURN expr ';'
+   38      | expr ';'
+   39      | ID '=' expr ';'
+
+   40 $@3: %empty
+
+   41 instr: IF '(' expr fixif ')' instr ELSE $@3 instr
+   42      | IF '(' expr fixif ')' instr
+
+   43 @4: %empty
+
+   44 $@5: %empty
+
+   45 instr: WHILE '(' @4 expr $@5 ')' instr
+   46      | PRINT expr ';'
+
+   47 decl: type ID '=' expr ';'
+   48     | type ID ';'
+
+   49 expr: ID '(' lexprV ')'
+   50     | expr '+' expr
+   51     | expr '-' expr
+   52     | expr '*' expr
+   53     | expr '/' expr
+   54     | NUMBER
+   55     | '(' expr ')'
+   56     | expr EQ expr
+   57     | expr INF expr
+   58     | expr SUP expr
+   59     | expr INF_EQ expr
+   60     | expr SUP_EQ expr
+   61     | expr AND expr
+   62     | expr OR expr
+   63     | NEG expr
+   64     | TRUE
+   65     | FALSE
+   66     | ID
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '\n' (10) 1 2 3 4 5 6 7
+    '(' (40) 17 41 42 45 49 55
+    ')' (41) 17 41 42 45 49 55
+    '*' (42) 52
+    '+' (43) 50
+    ',' (44) 21
+    '-' (45) 51
+    '/' (47) 53
+    ';' (59) 36 37 38 39 46 47 48
+    '=' (61) 39 47
+    '{' (123) 22
+    '}' (125) 22
+    error (256) 1 2 3
+    NUMBER <entier> (258) 54
+    AND (259) 61
+    EQ (260) 56
+    OR (261) 62
+    NEG (262) 63
+    TRUE (263) 64
+    FALSE (264) 65
+    BOOL_LEX (265) 12
+    INT_LEX (266) 13
+    VOID_LEX (267) 14
+    ID <chaine> (268) 17 20 21 39 47 48 49 66
+    IF (269) 41 42
+    WHILE (270) 45
+    PRINT (271) 46
+    ELSE (272) 41
+    NON_ELSE (273)
+    RETURN (274) 36 37
+    SUP (275) 58
+    SUP_EQ (276) 60
+    INF (277) 57
+    INF_EQ (278) 59
+
+
+Nonterminals, with rules where they appear
+
+    $accept (36)
+        on left: 0
+    lignes (37)
+        on left: 1 2 3 4 5 6 7
+        on right: 0 1 4 5
+    ligne (38)
+        on left: 8 9 10
+        on right: 2 4 6
+    fixif (39)
+        on left: 11
+        on right: 41 42
+    type <entier> (40)
+        on left: 12 13 14
+        on right: 17 20 21 47 48
+    deffun (41)
+        on left: 17
+        on right: 10
+    $@1 (42)
+        on left: 15
+        on right: 17
+    $@2 (43)
+        on left: 16
+        on right: 17
+    largV <entier> (44)
+        on left: 18 19
+        on right: 17
+    largs <entier> (45)
+        on left: 20 21
+        on right: 19 21
+    blocinstr <entier> (46)
+        on left: 22
+        on right: 17 35
+    sdeclV <entier> (47)
+        on left: 23 24
+        on right: 22
+    sdecl <entier> (48)
+        on left: 25 26
+        on right: 24 26
+    sinstrV <entier> (49)
+        on left: 27 28
+        on right: 22
+    sinstr <entier> (50)
+        on left: 29 30
+        on right: 28 30
+    lexpr <entier> (51)
+        on left: 31 32
+        on right: 32 34
+    lexprV <entier> (52)
+        on left: 33 34
+        on right: 49
+    instr <entier> (53)
+        on left: 35 36 37 38 39 41 42 45 46
+        on right: 8 29 30 41 42 45
+    $@3 (54)
+        on left: 40
+        on right: 41
+    @4 (55)
+        on left: 43
+        on right: 45
+    $@5 (56)
+        on left: 44
+        on right: 45
+    decl <entier> (57)
+        on left: 47 48
+        on right: 9 25 26
+    expr <entier> (58)
+        on left: 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66
+        on right: 31 32 37 38 39 41 42 45 46 47 50 51 52 53 55 56 57 58 59 60 61 62 63
+
+
+State 0
+
+    0 $accept: . lignes $end
+
+    error     shift, and go to state 1
+    NUMBER    shift, and go to state 2
+    NEG       shift, and go to state 3
+    TRUE      shift, and go to state 4
+    FALSE     shift, and go to state 5
+    BOOL_LEX  shift, and go to state 6
+    INT_LEX   shift, and go to state 7
+    VOID_LEX  shift, and go to state 8
+    ID        shift, and go to state 9
+    IF        shift, and go to state 10
+    WHILE     shift, and go to state 11
+    PRINT     shift, and go to state 12
+    RETURN    shift, and go to state 13
+    '\n'      shift, and go to state 14
+    '('       shift, and go to state 15
+    '{'       shift, and go to state 16
+
+    lignes     go to state 17
+    ligne      go to state 18
+    type       go to state 19
+    deffun     go to state 20
+    blocinstr  go to state 21
+    instr      go to state 22
+    decl       go to state 23
+    expr       go to state 24
+
+
+State 1
+
+    3 lignes: error . '\n'
+
+    '\n'  shift, and go to state 25
+
+
+State 2
+
+   54 expr: NUMBER .
+
+    $default  reduce using rule 54 (expr)
+
+
+State 3
+
+   63 expr: NEG . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 27
+
+
+State 4
+
+   64 expr: TRUE .
+
+    $default  reduce using rule 64 (expr)
+
+
+State 5
+
+   65 expr: FALSE .
+
+    $default  reduce using rule 65 (expr)
+
+
+State 6
+
+   12 type: BOOL_LEX .
+
+    $default  reduce using rule 12 (type)
+
+
+State 7
+
+   13 type: INT_LEX .
+
+    $default  reduce using rule 13 (type)
+
+
+State 8
+
+   14 type: VOID_LEX .
+
+    $default  reduce using rule 14 (type)
+
+
+State 9
+
+   39 instr: ID . '=' expr ';'
+   49 expr: ID . '(' lexprV ')'
+   66     | ID .
+
+    '('  shift, and go to state 28
+    '='  shift, and go to state 29
+
+    $default  reduce using rule 66 (expr)
+
+
+State 10
+
+   41 instr: IF . '(' expr fixif ')' instr ELSE $@3 instr
+   42      | IF . '(' expr fixif ')' instr
+
+    '('  shift, and go to state 30
+
+
+State 11
+
+   45 instr: WHILE . '(' @4 expr $@5 ')' instr
+
+    '('  shift, and go to state 31
+
+
+State 12
+
+   46 instr: PRINT . expr ';'
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 32
+
+
+State 13
+
+   36 instr: RETURN . ';'
+   37      | RETURN . expr ';'
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+    ';'     shift, and go to state 33
+
+    expr  go to state 34
+
+
+State 14
+
+    7 lignes: '\n' .
+
+    $default  reduce using rule 7 (lignes)
+
+
+State 15
+
+   55 expr: '(' . expr ')'
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 35
+
+
+State 16
+
+   22 blocinstr: '{' . sdeclV sinstrV '}'
+
+    BOOL_LEX  shift, and go to state 6
+    INT_LEX   shift, and go to state 7
+    VOID_LEX  shift, and go to state 8
+
+    $default  reduce using rule 23 (sdeclV)
+
+    type    go to state 36
+    sdeclV  go to state 37
+    sdecl   go to state 38
+    decl    go to state 39
+
+
+State 17
+
+    0 $accept: lignes . $end
+    1 lignes: lignes . error '\n'
+    4       | lignes . ligne '\n'
+    5       | lignes . '\n'
+
+    $end      shift, and go to state 40
+    error     shift, and go to state 41
+    NUMBER    shift, and go to state 2
+    NEG       shift, and go to state 3
+    TRUE      shift, and go to state 4
+    FALSE     shift, and go to state 5
+    BOOL_LEX  shift, and go to state 6
+    INT_LEX   shift, and go to state 7
+    VOID_LEX  shift, and go to state 8
+    ID        shift, and go to state 9
+    IF        shift, and go to state 10
+    WHILE     shift, and go to state 11
+    PRINT     shift, and go to state 12
+    RETURN    shift, and go to state 13
+    '\n'      shift, and go to state 42
+    '('       shift, and go to state 15
+    '{'       shift, and go to state 16
+
+    ligne      go to state 43
+    type       go to state 19
+    deffun     go to state 20
+    blocinstr  go to state 21
+    instr      go to state 22
+    decl       go to state 23
+    expr       go to state 24
+
+
+State 18
+
+    2 lignes: ligne . error '\n'
+    6       | ligne . '\n'
+
+    error  shift, and go to state 44
+    '\n'   shift, and go to state 45
+
+
+State 19
+
+   17 deffun: type . ID $@1 '(' largV ')' $@2 blocinstr
+   47 decl: type . ID '=' expr ';'
+   48     | type . ID ';'
+
+    ID  shift, and go to state 46
+
+
+State 20
+
+   10 ligne: deffun .
+
+    $default  reduce using rule 10 (ligne)
+
+
+State 21
+
+   35 instr: blocinstr .
+
+    $default  reduce using rule 35 (instr)
+
+
+State 22
+
+    8 ligne: instr .
+
+    $default  reduce using rule 8 (ligne)
+
+
+State 23
+
+    9 ligne: decl .
+
+    $default  reduce using rule 9 (ligne)
+
+
+State 24
+
+   38 instr: expr . ';'
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+    ';'     shift, and go to state 58
+
+
+State 25
+
+    3 lignes: error '\n' .
+
+    $default  reduce using rule 3 (lignes)
+
+
+State 26
+
+   49 expr: ID . '(' lexprV ')'
+   66     | ID .
+
+    '('  shift, and go to state 28
+
+    '('       [reduce using rule 66 (expr)]
+    $default  reduce using rule 66 (expr)
+
+
+State 27
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+   63     | NEG expr .
+
+    $default  reduce using rule 63 (expr)
+
+
+State 28
+
+   49 expr: ID '(' . lexprV ')'
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    $default  reduce using rule 33 (lexprV)
+
+    lexpr   go to state 59
+    lexprV  go to state 60
+    expr    go to state 61
+
+
+State 29
+
+   39 instr: ID '=' . expr ';'
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 62
+
+
+State 30
+
+   41 instr: IF '(' . expr fixif ')' instr ELSE $@3 instr
+   42      | IF '(' . expr fixif ')' instr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 63
+
+
+State 31
+
+   45 instr: WHILE '(' . @4 expr $@5 ')' instr
+
+    $default  reduce using rule 43 (@4)
+
+    @4  go to state 64
+
+
+State 32
+
+   46 instr: PRINT expr . ';'
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+    ';'     shift, and go to state 65
+
+
+State 33
+
+   36 instr: RETURN ';' .
+
+    $default  reduce using rule 36 (instr)
+
+
+State 34
+
+   37 instr: RETURN expr . ';'
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+    ';'     shift, and go to state 66
+
+
+State 35
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   55     | '(' expr . ')'
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+    ')'     shift, and go to state 67
+
+
+State 36
+
+   47 decl: type . ID '=' expr ';'
+   48     | type . ID ';'
+
+    ID  shift, and go to state 68
+
+
+State 37
+
+   22 blocinstr: '{' sdeclV . sinstrV '}'
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 9
+    IF      shift, and go to state 10
+    WHILE   shift, and go to state 11
+    PRINT   shift, and go to state 12
+    RETURN  shift, and go to state 13
+    '('     shift, and go to state 15
+    '{'     shift, and go to state 16
+
+    $default  reduce using rule 27 (sinstrV)
+
+    blocinstr  go to state 21
+    sinstrV    go to state 69
+    sinstr     go to state 70
+    instr      go to state 71
+    expr       go to state 24
+
+
+State 38
+
+   24 sdeclV: sdecl .
+   26 sdecl: sdecl . decl
+
+    BOOL_LEX  shift, and go to state 6
+    INT_LEX   shift, and go to state 7
+    VOID_LEX  shift, and go to state 8
+
+    $default  reduce using rule 24 (sdeclV)
+
+    type  go to state 36
+    decl  go to state 72
+
+
+State 39
+
+   25 sdecl: decl .
+
+    $default  reduce using rule 25 (sdecl)
+
+
+State 40
+
+    0 $accept: lignes $end .
+
+    $default  accept
+
+
+State 41
+
+    1 lignes: lignes error . '\n'
+
+    '\n'  shift, and go to state 73
+
+
+State 42
+
+    5 lignes: lignes '\n' .
+
+    $default  reduce using rule 5 (lignes)
+
+
+State 43
+
+    4 lignes: lignes ligne . '\n'
+
+    '\n'  shift, and go to state 74
+
+
+State 44
+
+    2 lignes: ligne error . '\n'
+
+    '\n'  shift, and go to state 75
+
+
+State 45
+
+    6 lignes: ligne '\n' .
+
+    $default  reduce using rule 6 (lignes)
+
+
+State 46
+
+   17 deffun: type ID . $@1 '(' largV ')' $@2 blocinstr
+   47 decl: type ID . '=' expr ';'
+   48     | type ID . ';'
+
+    ';'  shift, and go to state 76
+    '='  shift, and go to state 77
+
+    $default  reduce using rule 15 ($@1)
+
+    $@1  go to state 78
+
+
+State 47
+
+   61 expr: expr AND . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 79
+
+
+State 48
+
+   56 expr: expr EQ . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 80
+
+
+State 49
+
+   62 expr: expr OR . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 81
+
+
+State 50
+
+   58 expr: expr SUP . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 82
+
+
+State 51
+
+   60 expr: expr SUP_EQ . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 83
+
+
+State 52
+
+   57 expr: expr INF . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 84
+
+
+State 53
+
+   59 expr: expr INF_EQ . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 85
+
+
+State 54
+
+   50 expr: expr '+' . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 86
+
+
+State 55
+
+   51 expr: expr '-' . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 87
+
+
+State 56
+
+   52 expr: expr '*' . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 88
+
+
+State 57
+
+   53 expr: expr '/' . expr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 89
+
+
+State 58
+
+   38 instr: expr ';' .
+
+    $default  reduce using rule 38 (instr)
+
+
+State 59
+
+   32 lexpr: lexpr . expr
+   34 lexprV: lexpr .
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    $default  reduce using rule 34 (lexprV)
+
+    expr  go to state 90
+
+
+State 60
+
+   49 expr: ID '(' lexprV . ')'
+
+    ')'  shift, and go to state 91
+
+
+State 61
+
+   31 lexpr: expr .
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+
+    $default  reduce using rule 31 (lexpr)
+
+
+State 62
+
+   39 instr: ID '=' expr . ';'
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+    ';'     shift, and go to state 92
+
+
+State 63
+
+   41 instr: IF '(' expr . fixif ')' instr ELSE $@3 instr
+   42      | IF '(' expr . fixif ')' instr
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+
+    $default  reduce using rule 11 (fixif)
+
+    fixif  go to state 93
+
+
+State 64
+
+   45 instr: WHILE '(' @4 . expr $@5 ')' instr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 94
+
+
+State 65
+
+   46 instr: PRINT expr ';' .
+
+    $default  reduce using rule 46 (instr)
+
+
+State 66
+
+   37 instr: RETURN expr ';' .
+
+    $default  reduce using rule 37 (instr)
+
+
+State 67
+
+   55 expr: '(' expr ')' .
+
+    $default  reduce using rule 55 (expr)
+
+
+State 68
+
+   47 decl: type ID . '=' expr ';'
+   48     | type ID . ';'
+
+    ';'  shift, and go to state 76
+    '='  shift, and go to state 77
+
+
+State 69
+
+   22 blocinstr: '{' sdeclV sinstrV . '}'
+
+    '}'  shift, and go to state 95
+
+
+State 70
+
+   28 sinstrV: sinstr .
+   30 sinstr: sinstr . instr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 9
+    IF      shift, and go to state 10
+    WHILE   shift, and go to state 11
+    PRINT   shift, and go to state 12
+    RETURN  shift, and go to state 13
+    '('     shift, and go to state 15
+    '{'     shift, and go to state 16
+
+    $default  reduce using rule 28 (sinstrV)
+
+    blocinstr  go to state 21
+    instr      go to state 96
+    expr       go to state 24
+
+
+State 71
+
+   29 sinstr: instr .
+
+    $default  reduce using rule 29 (sinstr)
+
+
+State 72
+
+   26 sdecl: sdecl decl .
+
+    $default  reduce using rule 26 (sdecl)
+
+
+State 73
+
+    1 lignes: lignes error '\n' .
+
+    $default  reduce using rule 1 (lignes)
+
+
+State 74
+
+    4 lignes: lignes ligne '\n' .
+
+    $default  reduce using rule 4 (lignes)
+
+
+State 75
+
+    2 lignes: ligne error '\n' .
+
+    $default  reduce using rule 2 (lignes)
+
+
+State 76
+
+   48 decl: type ID ';' .
+
+    $default  reduce using rule 48 (decl)
+
+
+State 77
+
+   47 decl: type ID '=' . expr ';'
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 26
+    '('     shift, and go to state 15
+
+    expr  go to state 97
+
+
+State 78
+
+   17 deffun: type ID $@1 . '(' largV ')' $@2 blocinstr
+
+    '('  shift, and go to state 98
+
+
+State 79
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   61     | expr AND expr .
+   62     | expr . OR expr
+
+    EQ      shift, and go to state 48
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+
+    $default  reduce using rule 61 (expr)
+
+
+State 80
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   56     | expr EQ expr .
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+
+    $default  reduce using rule 56 (expr)
+
+
+State 81
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+   62     | expr OR expr .
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+
+    $default  reduce using rule 62 (expr)
+
+
+State 82
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   58     | expr SUP expr .
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+
+    $default  reduce using rule 58 (expr)
+
+
+State 83
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   60     | expr SUP_EQ expr .
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+
+    $default  reduce using rule 60 (expr)
+
+
+State 84
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   57     | expr INF expr .
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+
+    $default  reduce using rule 57 (expr)
+
+
+State 85
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   59     | expr INF_EQ expr .
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+
+    $default  reduce using rule 59 (expr)
+
+
+State 86
+
+   50 expr: expr . '+' expr
+   50     | expr '+' expr .
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+
+    $default  reduce using rule 50 (expr)
+
+
+State 87
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   51     | expr '-' expr .
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    '*'  shift, and go to state 56
+    '/'  shift, and go to state 57
+
+    $default  reduce using rule 51 (expr)
+
+
+State 88
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   52     | expr '*' expr .
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    $default  reduce using rule 52 (expr)
+
+
+State 89
+
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   53     | expr '/' expr .
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    $default  reduce using rule 53 (expr)
+
+
+State 90
+
+   32 lexpr: lexpr expr .
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+
+    $default  reduce using rule 32 (lexpr)
+
+
+State 91
+
+   49 expr: ID '(' lexprV ')' .
+
+    $default  reduce using rule 49 (expr)
+
+
+State 92
+
+   39 instr: ID '=' expr ';' .
+
+    $default  reduce using rule 39 (instr)
+
+
+State 93
+
+   41 instr: IF '(' expr fixif . ')' instr ELSE $@3 instr
+   42      | IF '(' expr fixif . ')' instr
+
+    ')'  shift, and go to state 99
+
+
+State 94
+
+   45 instr: WHILE '(' @4 expr . $@5 ')' instr
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+
+    $default  reduce using rule 44 ($@5)
+
+    $@5  go to state 100
+
+
+State 95
+
+   22 blocinstr: '{' sdeclV sinstrV '}' .
+
+    $default  reduce using rule 22 (blocinstr)
+
+
+State 96
+
+   30 sinstr: sinstr instr .
+
+    $default  reduce using rule 30 (sinstr)
+
+
+State 97
+
+   47 decl: type ID '=' expr . ';'
+   50 expr: expr . '+' expr
+   51     | expr . '-' expr
+   52     | expr . '*' expr
+   53     | expr . '/' expr
+   56     | expr . EQ expr
+   57     | expr . INF expr
+   58     | expr . SUP expr
+   59     | expr . INF_EQ expr
+   60     | expr . SUP_EQ expr
+   61     | expr . AND expr
+   62     | expr . OR expr
+
+    AND     shift, and go to state 47
+    EQ      shift, and go to state 48
+    OR      shift, and go to state 49
+    SUP     shift, and go to state 50
+    SUP_EQ  shift, and go to state 51
+    INF     shift, and go to state 52
+    INF_EQ  shift, and go to state 53
+    '+'     shift, and go to state 54
+    '-'     shift, and go to state 55
+    '*'     shift, and go to state 56
+    '/'     shift, and go to state 57
+    ';'     shift, and go to state 101
+
+
+State 98
+
+   17 deffun: type ID $@1 '(' . largV ')' $@2 blocinstr
+
+    BOOL_LEX  shift, and go to state 6
+    INT_LEX   shift, and go to state 7
+    VOID_LEX  shift, and go to state 8
+
+    $default  reduce using rule 18 (largV)
+
+    type   go to state 102
+    largV  go to state 103
+    largs  go to state 104
+
+
+State 99
+
+   41 instr: IF '(' expr fixif ')' . instr ELSE $@3 instr
+   42      | IF '(' expr fixif ')' . instr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 9
+    IF      shift, and go to state 10
+    WHILE   shift, and go to state 11
+    PRINT   shift, and go to state 12
+    RETURN  shift, and go to state 13
+    '('     shift, and go to state 15
+    '{'     shift, and go to state 16
+
+    blocinstr  go to state 21
+    instr      go to state 105
+    expr       go to state 24
+
+
+State 100
+
+   45 instr: WHILE '(' @4 expr $@5 . ')' instr
+
+    ')'  shift, and go to state 106
+
+
+State 101
+
+   47 decl: type ID '=' expr ';' .
+
+    $default  reduce using rule 47 (decl)
+
+
+State 102
+
+   20 largs: type . ID
+
+    ID  shift, and go to state 107
+
+
+State 103
+
+   17 deffun: type ID $@1 '(' largV . ')' $@2 blocinstr
+
+    ')'  shift, and go to state 108
+
+
+State 104
+
+   19 largV: largs .
+   21 largs: largs . ',' type ID
+
+    ','  shift, and go to state 109
+
+    $default  reduce using rule 19 (largV)
+
+
+State 105
+
+   41 instr: IF '(' expr fixif ')' instr . ELSE $@3 instr
+   42      | IF '(' expr fixif ')' instr .
+
+    ELSE  shift, and go to state 110
+
+    $default  reduce using rule 42 (instr)
+
+
+State 106
+
+   45 instr: WHILE '(' @4 expr $@5 ')' . instr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 9
+    IF      shift, and go to state 10
+    WHILE   shift, and go to state 11
+    PRINT   shift, and go to state 12
+    RETURN  shift, and go to state 13
+    '('     shift, and go to state 15
+    '{'     shift, and go to state 16
+
+    blocinstr  go to state 21
+    instr      go to state 111
+    expr       go to state 24
+
+
+State 107
+
+   20 largs: type ID .
+
+    $default  reduce using rule 20 (largs)
+
+
+State 108
+
+   17 deffun: type ID $@1 '(' largV ')' . $@2 blocinstr
+
+    $default  reduce using rule 16 ($@2)
+
+    $@2  go to state 112
+
+
+State 109
+
+   21 largs: largs ',' . type ID
+
+    BOOL_LEX  shift, and go to state 6
+    INT_LEX   shift, and go to state 7
+    VOID_LEX  shift, and go to state 8
+
+    type  go to state 113
+
+
+State 110
+
+   41 instr: IF '(' expr fixif ')' instr ELSE . $@3 instr
+
+    $default  reduce using rule 40 ($@3)
+
+    $@3  go to state 114
+
+
+State 111
+
+   45 instr: WHILE '(' @4 expr $@5 ')' instr .
+
+    $default  reduce using rule 45 (instr)
+
+
+State 112
+
+   17 deffun: type ID $@1 '(' largV ')' $@2 . blocinstr
+
+    '{'  shift, and go to state 16
+
+    blocinstr  go to state 115
+
+
+State 113
+
+   21 largs: largs ',' type . ID
+
+    ID  shift, and go to state 116
+
+
+State 114
+
+   41 instr: IF '(' expr fixif ')' instr ELSE $@3 . instr
+
+    NUMBER  shift, and go to state 2
+    NEG     shift, and go to state 3
+    TRUE    shift, and go to state 4
+    FALSE   shift, and go to state 5
+    ID      shift, and go to state 9
+    IF      shift, and go to state 10
+    WHILE   shift, and go to state 11
+    PRINT   shift, and go to state 12
+    RETURN  shift, and go to state 13
+    '('     shift, and go to state 15
+    '{'     shift, and go to state 16
+
+    blocinstr  go to state 21
+    instr      go to state 117
+    expr       go to state 24
+
+
+State 115
+
+   17 deffun: type ID $@1 '(' largV ')' $@2 blocinstr .
+
+    $default  reduce using rule 17 (deffun)
+
+
+State 116
+
+   21 largs: largs ',' type ID .
+
+    $default  reduce using rule 21 (largs)
+
+
+State 117
+
+   41 instr: IF '(' expr fixif ')' instr ELSE $@3 instr .
+
+    $default  reduce using rule 41 (instr)
