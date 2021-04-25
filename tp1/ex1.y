@@ -29,6 +29,10 @@
   #define EQ_VRAI 				"eq:vrai"
   #define EQ_FAUX 				"eq:faux"
 
+  #define DIF_FIN 				"d"IF_FIN""
+  #define DIF_VRAI 				"dif:vrai"
+  #define DIF_FAUX 				"dif:faux"
+
   #define INF_FIN 				"inf:fin"
   #define INF_VRAI 				"inf:vrai"
   #define INF_FAUX 				"inf:faux"
@@ -70,6 +74,13 @@
   #define PRINT_FALSE			"bool:affichage:faux"
   #define PRINT_FIN				"bool:affichage:fin"
 
+  #define IF_FIN				"if:fin"
+  #define IF_TEST_NEG			"if:test:neg"
+  #define DEBUT_WHILE			"debut:while"
+
+  #define WHILE_FAUX			"while:faux"
+  #define WHILE_FIN				"fin:while"
+
   char buffer1[MAXBUF];
   char buffer2[MAXBUF];
 
@@ -83,7 +94,14 @@
 //%define api.value.type { int }
 %union { int entier; char* chaine; }
 
-%token NUMBER AND EQ OR NEG TRUE FALSE BOOL_LEX INT_LEX VOID_LEX ID IF WHILE PRINT ELSE NON_ELSE RETURN SUP SUP_EQ INF INF_EQ
+%token ID 
+%token VOID_LEX
+%token INT_LEX NUMBER
+%token BOOL_LEX TRUE FALSE
+%token AND OR NEG
+%token IF WHILE ELSE NON_ELSE
+%token PRINT RETURN
+%token EQ DIF SUP SUP_EQ INF INF_EQ
 
 %start lignes
 
@@ -92,7 +110,7 @@
 %left AND
 %left EQ SUP INF SUP_EQ INF_EQ
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %left NEG
 %precedence NON_ELSE
 %precedence ELSE
@@ -124,7 +142,7 @@ fixif : %empty
 	printf("; If No %d\n"
 	"\tpop ax\n"
 	"\tconst bx,0\n"
-	"\tconst cx,if:test:neg:%d\n"
+	"\tconst cx,"IF_TEST_NEG":%d\n"
 	"\tcmp ax,bx\n"
 	"\tjmpc cx\n"
 	, number, number);
@@ -140,11 +158,14 @@ type :
 deffun :
  type ID 	{
 
-			 
+			// Vérifier qu'aucune fontion n'est en analyse
+				if (funDef != NULL) {
+					fail_with("Erreur syntaxique: définition de fonction dans l'espace locale de %s() \n\n", funDef->name);
+				}
 			// Vérification de l'unicité de l'identifiant de la fonction
 				funDef = search_symbol_table($2);
 				if (funDef != NULL) {
-					fail_with("ID existe deja\n");
+					fail_with("Erreur: %s() est déjà défini\n\n", $2);
 				}
 
 			/* Ajout de l'identifiant de la fontion dans la
@@ -207,7 +228,9 @@ largs :
 					// Vérification de l'unicité de l'identifiant de l'argument
 						symbol_table_entry* funArg = search_symbol_table($2);
 						if (funArg != NULL){
-							fail_with("ID existe deja\n");
+							fail_with(
+								"Erreur: %s est déjà défini dans %s()\n\n",
+							$2, funDef->name);
 						}
 
 					/* Ajout de l'identifiant de l'argument dans la
@@ -248,7 +271,8 @@ largs :
 					// Vérification de l'unicité de l'identifiant de l'argument
 						symbol_table_entry* funArg = search_symbol_table($4);
 						if (funArg != NULL){
-							fail_with("ID existe deja\n");
+							fail_with("Erreur: %s est déjà défini dans %s()\n\n",
+							$4, funDef->name);
 						}
 
 					/* Ajout de l'identifiant de l'argument dans la
@@ -289,6 +313,8 @@ largs :
 
 blocinstr :
  '{' sdeclV sinstrV '}'	{
+	 					// Libérer les définitions de varibles locales
+						// de la table des symbolse
 							for (int i = 0; i < $2; i++) {
 								free_first_symbol_table_entry();
 							}
@@ -334,12 +360,19 @@ instr:
   blocinstr			{ $$ = $1; }
 
 | RETURN ';'		{
+					// Si espace global erreur
+					// Sinon si analyse de fonction en cours et
+					// type de retour de f() != VOID erreur
 						if (funDef == NULL) {
-							fail_with("Espace global, retour de valeur impossible !");
+							fail_with(
+								"Erreur: espace global, retour de valeur impossible !\n\n");
 								$$ = ERR;
 						} else {
 							if (funDef->desc[0] != VOID_T) {
-								fail_with("Types de retour incompatible !");
+								fail_with(
+									"Erreur: type de retour incompatible:\n"
+									"\t%s %s() retourne void!\n\n",
+								(funDef->desc[0] == INT_T ? "int" : "bool" ), funDef->name);
 								$$ = ERR;
 							} else {
 								$$ = VOID_T;
@@ -347,85 +380,177 @@ instr:
 						}
 					}
 
+| RETURN VOID_LEX ';'		{
+// Si espace global erreur
+// Sinon si analyse de fonction en cours et
+// type de retour de f() != VOID erreur
+	if (funDef == NULL) {
+		fail_with(
+			"Erreur: espace global, retour de valeur impossible !\n\n");
+			$$ = ERR;
+	} else {
+		if (funDef->desc[0] != VOID_T) {
+			fail_with(
+				"Erreur: type de retour incompatible:\n"
+				"\t%s %s() retourne void!\n\n",
+			(funDef->desc[0] == INT_T ? "int" : "bool" ), funDef->name);
+			$$ = ERR;
+		} else {
+			$$ = VOID_T;
+		}
+	}
+}
+
 | RETURN expr ';'	{
-						if ($2 != ERR) {
-							if (funDef == NULL) {
-								fail_with("Espace global, retour de valeur impossible !");
+					// Si espace global erreur
+					// Sinon si analyse de fonction en cours et
+					// type de retour de f() != type de expr erreur
+						if (funDef == NULL) {
+							fail_with(
+								"Erreur: espace global, retour de valeur impossible !\n\n");
 								$$ = ERR;
+						} else {
+							if (   (funDef->desc[0] == INT_T && $2 != T_INT)
+								|| (funDef->desc[0] == BOOL_T && $2 != T_BOOL)
+								|| (funDef->desc[0] == VOID_T)) {
+									$$ = ERR;
+									fail_with(
+										"Erreur: type de retour incompatible:\n"
+										"\t%s %s() retourne %s!\n\n",
+									(funDef->desc[0] == INT_T ? "int" : (funDef->desc[0] == BOOL_T ? "bool" : "void") ),
+									funDef->name,
+									($2 == T_INT ? "int" : "bool"));
 							} else {
-								if (   (funDef->desc[0] == INT_T && $2 != T_INT)
-									|| (funDef->desc[0] == BOOL_T && $2 != T_BOOL)
-									|| (funDef->desc[0] == VOID_T)) {
-										fail_with("Types de retour incompatible !");
-										$$ = ERR;
-								} else {
-									$$ = $2;
-								}
+								$$ = $2;
 							}
 						}
+
 					}
 
-| expr ';'			{
-						if ($1 != ERR){
-							printf("\tpop\n");
+| expr ';'				{
+							if ($1 != ERR){
+								printf(
+									"; Résultat de expr non évalué"
+									"\tpop\n"
+								);
+							}
 						}
-					}
 | ID '=' expr ';'		{
-					symbol_table_entry* ste = search_symbol_table($1);
+					// Vérifier si ID a été déclaréet est une variable, sinon erreur
+					// Générer le cde d'affectation d'une variable
+							symbol_table_entry* var = search_symbol_table($1);
 
-					if(ste == NULL){
-						fail_with("ID n'existe pas");
-					}
-
-					if( (ste->desc[0] == INT_T && $3 != T_INT) || (ste->desc[0] == BOOL_T && $3 != T_BOOL)){
-						fail_with("Type incompatible");
-					}
-
-					printf("; Code affectation variable %s\n"
-					"\tpop ax\n"
-					"\tconst bx,"VAR_GLOBAL":%s\n"
-					"\tstorew ax,bx\n",
-					 ste->name, ste->name);
-				}
-
-| IF '(' expr fixif ')' instr ELSE {
-					printf(";si if No %d vrai et instr executé\n"
-					"\tconst ax,if:fin:%d\n"
-					"\tjmp ax\n\n"
-					";si if No %d est faux\n"
-					":if:test:neg:%d\n"
-					, $<entier>4, $<entier>4, $<entier>4, $<entier>4);
-				} instr {
-						if ( $3 != T_BOOL ) { fail_with("condition du if non booleenne \n"); }
-						printf(";fin du if No %d\n"
-						":if:fin:%d\n"
-						, $<entier>4, $<entier>4);
-					}
-| IF '(' expr fixif ')' instr {
-				if ( $3 != T_BOOL ) { fail_with("condition du if non booleenne \n"); }
-				printf(";si if No %d est faux\n"
-				":if:test:neg:%d\n"
-				, $<entier>4, $<entier>4);
-			} %prec NON_ELSE
-| WHILE '('{
-	unsigned int number = new_label_number();
-	$<entier>$ = number;
-	printf(":debut:while:%u\n",number);
-	}expr{
-		printf("; while No %u\n"
-		"\tpop ax\n"
-		"\tconst bx,0\n"
-		"\tconst cx,fin:while:%u\n"
-		"\tcmp ax,bx\n"
-		"\tjmpc cx\n"
-		, $<entier>3, $<entier>3);
-				}')' instr{
-						if( $4 != T_BOOL ){ fail_with("condition non booléenne\n");}
-						printf("; fin tour de boucle\n"
-						"\tconst cx,debut:while:%u\n"
-						"\tjmp cx\n\n"
-						":fin:while:%u\n", $<entier>3, $<entier>3);
+							if (var == NULL) {
+								fail_with("Erreur: variable %s non déclaré !\n\n", $1);
+								$$ = ERR;
+							} else if ( var->class == FUNCTION) {
+								fail_with("Erreur: %s() est une fonction !\n\n", $1);
+								$$ = ERR;
 							}
+
+							if ( (var->desc[0] == INT_T && $3 != T_INT)
+								|| (var->desc[0] == BOOL_T && $3 != T_BOOL)) {
+						// Vérification de la compatibilité des types
+								fail_with(
+									"Erreur: type incompatible\n"
+									"\t%s est de type %s, affectation de %s\n\n", 
+									$1, ((var->desc[0] == INT_T) ? "int" : "bool"),
+									(($3 == T_INT) ? "int" : "bool"));
+
+									$$ = ERR;
+							}
+
+							if (funDef == NULL) {
+						// Espace global, la variable est donc globale
+								printf(
+									"; Code affectation variable globale %s\n"
+									"\tpop ax\n"
+									"\tconst bx,"VAR_GLOBAL":%s\n"
+									"\tstorew ax,bx\n",
+								$1, $1);
+							} else {
+						// Analyse d'une fonction en cours, la variable est locale
+								printf(
+									"; Code affectation variable locale %s de %s\n"
+									"\tpop ax\n"
+									"\tconst bx,"VAR_LOCAL":%s:%s\n"
+									"\tstorew ax,bx\n",
+								$1, funDef->name,
+								funDef->name, $1);
+							}
+
+							$$ = $3;
+						}
+
+| IF '(' expr fixif ')' instr ELSE 	{
+				// Else est vrai
+					printf(
+						"; Si [else (expr)] == vrai \n"
+						"\tconst ax,"IF_FIN":%d\n"
+						"\tjmp ax\n"
+						"; Saut à "IF_FIN"\n\n"
+						"; Si [else (expr)] == faux\n"
+						":"IF_TEST_NEG":%d\n",
+					$<entier>4,
+					$<entier>4);
+
+							} instr {
+										if ( $3 != T_BOOL ) {
+											fail_with(
+												"Erreur: test de condition non booléeene dans\n"
+												"\t if (expr)\n\n"
+											);
+										}
+									// Fin ELSE
+										printf(
+											"; Fin else %d\n"
+											":"IF_FIN":%d\n"
+										, $<entier>4, $<entier>4);
+									}
+| IF '(' expr fixif ')' instr 		{
+										if ( $3 != T_BOOL ) { 
+											fail_with(
+												"Erreur: test de condition non booléeene dans\n"
+												"\t if (expr)\n\n"
+											);
+										}
+									// ELSE_FAUX
+										printf(
+											"; Si [else (expr)] == faux\n"
+											":"IF_TEST_NEG":%d\n",
+										$<entier>4);
+									} %prec NON_ELSE
+| WHILE '('							{
+										unsigned int labelNumber = new_label_number();
+										$<entier>$ = labelNumber;
+										printf(":"DEBUT_WHILE":%u\n",labelNumber);
+									} expr {
+										printf(
+											"; Code cible WHILE_FAUX:%d\n" 
+											"\tpop ax\n"
+											"\tconst bx,0\n"
+											"\tconst cx,"WHILE_FIN":%d\n"
+										// Test (expr == faux)
+											"\tcmp ax,bx\n"
+											"\tjmpc cx\n"
+											"; Si (expr == faux) saut à "WHILE_FIN"\n",
+										$<entier>3, $<entier>3);
+									} ')' instr {
+										
+									// WHILE_VRAI
+									// Vérifier si expr est booléen
+										if ( $4 != T_BOOL ) { 
+											fail_with(
+												"Erreur: test de condition non booléeene dans\n"
+												"\t while (expr) { ... }\n\n"
+											);
+										}
+										printf("; Fin tour de boucle\n"
+										"\tconst cx,"DEBUT_WHILE":%u\n"
+										"\tjmp cx\n\n"
+									// WHILE_FIN
+										":"WHILE_FIN":%u\n", $<entier>3, $<entier>3);
+									}
 | PRINT expr ';'		{
 					if ($2 == T_INT) {
  						printf("; Pour afficher la valeur calculée, qui se trouve normalement en sommet de pile\n"
@@ -482,7 +607,9 @@ decl:
 								
 								symbol_table_entry* var = search_symbol_table($2);
 								if (var != NULL){
-									fail_with("ID existe deja\n");
+									fail_with(
+										"Erreur: %s est déjà déclaré\n\n",
+									$2);
 								}
 								
 								var = new_symbol_table_entry($2);
@@ -531,17 +658,36 @@ decl:
 
 							} else {
 								$$ = ERR;
-								fail_with("Type imcompatible !");
+
+								if ($1 == VOID_T) {
+									fail_with(
+									"Erreur syntaxique: déclaration de variable incorrecte\n"
+									"\tvoid  %s;\n\n", $2);
+								} else {
+									fail_with(
+										"Erreur: type incompatible\n"
+										"\t%s est de type %s, affectation de %s\n\n", 
+										$1, (($1 == INT_T) ? "int" : "bool"),
+										(($4 == T_INT) ? "int" : "bool"));
+								}
 							}
 						}
 | type ID ';'	{
+						// Vérifier la syntaxe de la déclaration
 						// Ajouter l'ID dans la table des symboles en fontion
 						//  de la portée de la varible
 						// 		* Si analye de definition de fonction variable locale
 						//		* Sinon variable globale
+								if ($1 == VOID_T) {
+									fail_with(
+									"Erreur syntaxique: déclaration de variable incorrecte\n"
+									"\tvoid  %s;\n\n", $2);
+								}
 								symbol_table_entry* var = search_symbol_table($2);
 								if (var != NULL){
-									fail_with("ID existe deja\n");
+									fail_with(
+										"Erreur: %s est déjà déclaré\n\n",
+									$2);
 								}
 
 								var = new_symbol_table_entry($2);
@@ -581,7 +727,9 @@ expr	 :
 							symbol_table_entry* fun = search_symbol_table($1);
 
 							if (fun == NULL) {
-								fail_with("ID n'existe pas déja\n");
+								fail_with(
+									"Erreur: %s n'est pas déjà déclaré\n\n",
+								$1);
 								$$ = ERR;
 							}
 
@@ -623,6 +771,7 @@ expr	 :
 
 							$$ = T_INT;
 						} else {
+							fail_with("Erreur: erreur arithmétique !\n\n");
 							$$ = ERR;
 						}
 					}
@@ -638,6 +787,7 @@ expr	 :
 									"\tpush bx\n");
 								$$ = T_INT;
 							} else {
+								fail_with("Erreur: erreur arithmétique !\n\n");
 								$$ = ERR;
 							}
 						}
@@ -653,6 +803,7 @@ expr	 :
 									"\tpush bx\n");
 								$$ = T_INT;
 							} else {
+								fail_with("Erreur: erreur arithmétique !\n\n");
 								$$ = ERR;
 							}
 						}
@@ -670,6 +821,28 @@ expr	 :
 									"\tpush bx\n");
 								$$ = T_INT;
 							} else {
+								fail_with("Erreur: erreur arithmétique !\n\n");
+								$$ = ERR;
+							}
+						}
+| expr '%' expr			{
+						// Vérifier que expr1 et expr2 sont de type int sinon erreur de typage
+						// puis évaluer la modulo
+							if ($1 == T_INT && $3 == T_INT){
+								printf(
+									"; Debut modulo\n"
+									"\tpop ax\n"
+									"\tpop bx\n"
+									"\tcp cx,bx\n"
+									"\tconst dx,"ERR_DIV_ZERO"\n"
+									"\tdiv bx,ax\n"
+									"\tjmpe dx\n"
+									"\tmul bx,ax\n"
+									"\tsub cx,bx\n"
+									"\tpush cx\n");
+								$$ = T_INT;
+							} else {
+								fail_with("Erreur: erreur arithmétique !\n\n");
 								$$ = ERR;
 							}
 						}
@@ -730,11 +903,60 @@ expr	 :
 								$$ = T_BOOL;
 							} else {
 								$$ = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 								printf("; Fin EQ\n");
 						}
+
+| expr DIF expr			{
+						// Vérifier que expr1 et expr2 sont de type bool sinon erreur de typage
+						// Créer un nouveau label pour anticiper la récursivité
+						// puis évaluer le DIF
+							if ($1 == $3 && $1 != ERR) {
+								unsigned int labelNumber = new_label_number();
+								create_label(buffer1, MAXBUF, "%s:%u", DIF_VRAI, labelNumber);
+								create_label(buffer2, MAXBUF, "%s:%u", DIF_FIN, labelNumber);
+
+								printf(
+									"; Debut DIF (%d)\n"
+									"\tpop ax\n"
+									"\tpop bx\n"
+									"\tconst cx,%s\n"
+								// Test (expr1 == expr2)
+									"; Comparaison de expr1 et expr2\n"
+									"\tcmp ax,bx\n"
+									"\tjmpc cx\n"
+									"; Si expr1 == expr2 saut à "DIF_FAUX"\n"
+									"; Si expr1 != expr2 code cible "DIF_VRAI"\n"
+								// DIF_VRAI
+									"; Code cible "DIF_VRAI"\n"
+									"\tconst dx,1\n"
+									"\tpush dx\n"
+									"\tconst cx,%s\n"
+									"\tjmp cx\n\n"
+									";Saut à "DIF_FIN"\n"
+								// DIF_FAUX
+									"; Code cible "DIF_FAUX"\n"
+									":%s\n"
+									"\tconst dx,0\n"
+									"\tpush dx\n"
+								// DIF_FIN
+									"; Code cible "DIF_FIN"\n"
+									":%s\n",
+								labelNumber,
+								buffer1,
+								buffer2,
+								buffer1,
+								buffer2);
+
+								$$ = T_BOOL;
+							} else {
+								$$ = ERR;
+								fail_with("Erreur: erreur sémentique !\n\n");
+							}
+								printf("; Fin DIF\n");
+						}
+
 | expr INF expr			{
 						// Vérifier que expr1 et expr2 sont de type bool sinon erreur de typage
 						// Créer un nouveau label pour anticiper la récursivité
@@ -779,8 +1001,7 @@ expr	 :
 								$$ = T_BOOL;
 							} else {
 								$$ = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 							printf("; Fin INF\n");
 						}
@@ -825,8 +1046,7 @@ expr	 :
 								$$ = T_BOOL;
 							} else {
 								$$ = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 							printf("; Fin SUP\n");
 						}
@@ -878,8 +1098,7 @@ expr	 :
 								$$ = T_BOOL;
 							} else {
 								$$ = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 							printf("; Fin INF_EQ\n");
                       	}
@@ -929,8 +1148,7 @@ expr	 :
 								$$ = T_BOOL;
 							} else {
 								$$ = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 							printf(";Fin INF_EQ\n");
                       	}
@@ -947,6 +1165,7 @@ expr	 :
 								$$ = T_BOOL;
 							} else {
 								$$ = ERR;
+								fail_with("Erreur: erreur arithmétique !\n\n");
 							}
 							printf("; Fin AND\n");
 						}
@@ -1044,6 +1263,7 @@ expr	 :
 
 							}else{
 								$$ = ERR;
+								fail_with("Erreur: erreur arithmétique !\n\n");
 							}
 							printf("; Fin NEG\n");
 						}
@@ -1102,6 +1322,7 @@ expr	 :
 									: T_BOOL;
 							} else {
 						// ID n'est pas une varibale ou un paramètre
+							fail_with("Erreur: id n'est pas une variable ou un paramètre !\n\n");
 								$$ = ERR;
 							}
 						}

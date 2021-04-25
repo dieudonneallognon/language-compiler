@@ -98,6 +98,10 @@
   #define EQ_VRAI 				"eq:vrai"
   #define EQ_FAUX 				"eq:faux"
 
+  #define DIF_FIN 				"d"IF_FIN""
+  #define DIF_VRAI 				"dif:vrai"
+  #define DIF_FAUX 				"dif:faux"
+
   #define INF_FIN 				"inf:fin"
   #define INF_VRAI 				"inf:vrai"
   #define INF_FAUX 				"inf:faux"
@@ -139,6 +143,13 @@
   #define PRINT_FALSE			"bool:affichage:faux"
   #define PRINT_FIN				"bool:affichage:fin"
 
+  #define IF_FIN				"if:fin"
+  #define IF_TEST_NEG			"if:test:neg"
+  #define DEBUT_WHILE			"debut:while"
+
+  #define WHILE_FAUX			"while:faux"
+  #define WHILE_FIN				"fin:while"
+
   char buffer1[MAXBUF];
   char buffer2[MAXBUF];
 
@@ -149,7 +160,7 @@
   symbol_table_entry* funDef = NULL;
 
 
-#line 153 "ex1.tab.c"
+#line 164 "ex1.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -197,27 +208,28 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NUMBER = 258,
-    AND = 259,
-    EQ = 260,
-    OR = 261,
-    NEG = 262,
+    ID = 258,
+    VOID_LEX = 259,
+    INT_LEX = 260,
+    NUMBER = 261,
+    BOOL_LEX = 262,
     TRUE = 263,
     FALSE = 264,
-    BOOL_LEX = 265,
-    INT_LEX = 266,
-    VOID_LEX = 267,
-    ID = 268,
-    IF = 269,
-    WHILE = 270,
-    PRINT = 271,
-    ELSE = 272,
-    NON_ELSE = 273,
-    RETURN = 274,
-    SUP = 275,
-    SUP_EQ = 276,
-    INF = 277,
-    INF_EQ = 278
+    AND = 265,
+    OR = 266,
+    NEG = 267,
+    IF = 268,
+    WHILE = 269,
+    ELSE = 270,
+    NON_ELSE = 271,
+    PRINT = 272,
+    RETURN = 273,
+    EQ = 274,
+    DIF = 275,
+    SUP = 276,
+    SUP_EQ = 277,
+    INF = 278,
+    INF_EQ = 279
   };
 #endif
 
@@ -225,10 +237,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 84 "ex1.y"
+#line 95 "ex1.y"
  int entier; char* chaine; 
 
-#line 232 "ex1.tab.c"
+#line 244 "ex1.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -545,21 +557,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  40
+#define YYFINAL  41
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   338
+#define YYLAST   355
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  36
+#define YYNTOKENS  38
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  23
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  67
+#define YYNRULES  70
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  119
+#define YYNSTATES  125
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   278
+#define YYMAXUTOK   279
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -572,18 +584,18 @@ union yyalloc
 static const yytype_int8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      28,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+      30,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,    29,     2,     2,
+      31,    32,    27,    25,    33,    26,     2,    28,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,    36,
+       2,    37,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      29,    30,    26,    24,    31,    25,     2,    27,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,    34,
-       2,    35,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    32,     2,    33,     2,     2,     2,     2,
+       2,     2,     2,    34,     2,    35,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -598,20 +610,21 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   105,   105,   106,   107,   108,   109,   110,   111,   115,
-     116,   117,   120,   134,   135,   136,   141,   165,   141,   200,
-     201,   206,   247,   291,   300,   301,   305,   306,   310,   311,
-     315,   316,   323,   324,   328,   329,   334,   336,   350,   368,
-     373,   388,   388,   401,   407,   411,   407,   426,   472,   534,
-     576,   610,   626,   641,   656,   673,   684,   686,   735,   784,
-     830,   883,   934,   950,  1001,  1047,  1056,  1065
+       0,   123,   123,   124,   125,   126,   127,   128,   129,   133,
+     134,   135,   138,   152,   153,   154,   159,   186,   159,   221,
+     222,   227,   270,   315,   326,   327,   331,   332,   336,   337,
+     341,   342,   349,   350,   354,   355,   360,   362,   383,   404,
+     430,   438,   485,   485,   510,   523,   527,   523,   554,   600,
+     675,   725,   761,   778,   794,   810,   828,   849,   860,   862,
+     911,   960,  1008,  1053,  1105,  1155,  1172,  1223,  1270,  1279,
+    1288
 };
 #endif
 
@@ -620,14 +633,14 @@ static const yytype_int16 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "NUMBER", "AND", "EQ", "OR", "NEG",
-  "TRUE", "FALSE", "BOOL_LEX", "INT_LEX", "VOID_LEX", "ID", "IF", "WHILE",
-  "PRINT", "ELSE", "NON_ELSE", "RETURN", "SUP", "SUP_EQ", "INF", "INF_EQ",
-  "'+'", "'-'", "'*'", "'/'", "'\\n'", "'('", "')'", "','", "'{'", "'}'",
-  "';'", "'='", "$accept", "lignes", "ligne", "fixif", "type", "deffun",
-  "$@1", "$@2", "largV", "largs", "blocinstr", "sdeclV", "sdecl",
-  "sinstrV", "sinstr", "lexpr", "lexprV", "instr", "$@3", "@4", "$@5",
-  "decl", "expr", YY_NULLPTR
+  "$end", "error", "$undefined", "ID", "VOID_LEX", "INT_LEX", "NUMBER",
+  "BOOL_LEX", "TRUE", "FALSE", "AND", "OR", "NEG", "IF", "WHILE", "ELSE",
+  "NON_ELSE", "PRINT", "RETURN", "EQ", "DIF", "SUP", "SUP_EQ", "INF",
+  "INF_EQ", "'+'", "'-'", "'*'", "'/'", "'%'", "'\\n'", "'('", "')'",
+  "','", "'{'", "'}'", "';'", "'='", "$accept", "lignes", "ligne", "fixif",
+  "type", "deffun", "$@1", "$@2", "largV", "largs", "blocinstr", "sdeclV",
+  "sdecl", "sinstrV", "sinstr", "lexpr", "lexprV", "instr", "$@3", "@4",
+  "$@5", "decl", "expr", YY_NULLPTR
 };
 #endif
 
@@ -638,12 +651,12 @@ static const yytype_int16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,    43,    45,    42,    47,    10,    40,
-      41,    44,   123,   125,    59,    61
+     275,   276,   277,   278,   279,    43,    45,    42,    47,    37,
+      10,    40,    41,    44,   123,   125,    59,    61
 };
 # endif
 
-#define YYPACT_NINF (-36)
+#define YYPACT_NINF (-38)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -657,18 +670,19 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-     119,    -7,   -36,    11,   -36,   -36,   -36,   -36,   -36,   -23,
-      -6,    -4,    11,    29,   -36,    11,     5,    89,     2,    18,
-     -36,   -36,   -36,   -36,   135,   -36,     4,   -36,    11,    11,
-      11,   -36,   159,   -36,   183,   275,    21,   259,     5,   -36,
-     -36,    13,   -36,    15,    16,   -36,   -30,    11,    11,    11,
-      11,    11,    11,    11,    11,    11,    11,    11,   -36,     8,
-      26,   288,   207,   288,    11,   -36,   -36,   -36,   -30,    24,
-     259,   -36,   -36,   -36,   -36,   -36,   -36,    11,    30,   311,
-      42,   299,    42,    42,    42,    42,   -18,   -18,   -36,   -36,
-      11,   -36,   -36,    31,   288,   -36,   -36,   231,     5,   288,
-     259,    34,   -36,    47,    40,    43,    54,   259,   -36,   -36,
-       5,   -36,   -36,    41,    63,   259,   -36,   -36,   -36
+     130,   -18,   -23,   -38,   -38,   -38,   -38,   -38,   -38,     7,
+     -14,   -13,     7,    24,   -38,     7,    67,    98,     1,    19,
+     -38,   -38,   -38,   -38,   175,   -38,     7,     7,    -2,     5,
+       7,   -38,   195,   -10,   -38,   215,   275,    32,   159,    67,
+     -38,   -38,     9,   -38,    10,    11,   -38,   -32,     7,     7,
+       7,     7,     7,     7,     7,     7,     7,     7,     7,     7,
+       7,   -38,    23,    26,   295,   235,   295,     7,   -38,   -38,
+     -38,   -38,   -32,    33,   159,   -38,   -38,   -38,   -38,   -38,
+     -38,     7,    28,   326,   315,    37,   295,    37,    37,    37,
+      37,    50,    50,     5,     5,     5,     7,   -38,   -38,    35,
+     295,   -38,   -38,   255,    67,   295,   159,    41,   -38,    77,
+      49,    52,    68,   159,   -38,   -38,    67,   -38,   -38,    48,
+      83,   159,   -38,   -38,   -38
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -676,34 +690,35 @@ static const yytype_int16 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,    55,     0,    65,    66,    13,    14,    15,    67,
+       0,     0,    70,    15,    14,    57,    13,    68,    69,     0,
        0,     0,     0,     0,     8,     0,    24,     0,     0,     0,
-      11,    36,     9,    10,     0,     4,    67,    64,    34,     0,
-       0,    44,     0,    37,     0,     0,     0,    28,    25,    26,
-       1,     0,     6,     0,     0,     7,    16,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    39,    35,
-       0,    32,     0,    12,     0,    47,    38,    56,     0,     0,
-      29,    30,    27,     2,     5,     3,    49,     0,     0,    62,
-      57,    63,    59,    61,    58,    60,    51,    52,    53,    54,
-       0,    50,    40,     0,    45,    23,    31,     0,    19,    33,
-       0,     0,    48,     0,     0,    20,    43,     0,    21,    17,
-       0,    41,    46,     0,     0,     0,    18,    22,    42
+      11,    36,     9,    10,     0,     4,    34,     0,    70,    67,
+       0,    45,     0,     0,    37,     0,     0,     0,    28,    25,
+      26,     1,     0,     6,     0,     0,     7,    16,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    40,    35,     0,    32,     0,    12,     0,    48,    38,
+      39,    58,     0,     0,    29,    30,    27,     2,     5,     3,
+      50,     0,     0,    65,    66,    59,    60,    62,    64,    61,
+      63,    52,    53,    54,    55,    56,     0,    51,    41,     0,
+      46,    23,    31,     0,    19,    33,     0,     0,    49,     0,
+       0,    20,    44,     0,    21,    17,     0,    42,    47,     0,
+       0,     0,    18,    22,    43
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -36,   -36,    60,   -36,   -16,   -36,   -36,   -36,   -36,   -36,
-     -34,   -36,   -36,   -36,   -36,   -36,   -36,   -35,   -36,   -36,
-     -36,    -9,    -2
+     -38,   -38,    70,   -38,   -16,   -38,   -38,   -38,   -38,   -38,
+     -30,   -38,   -38,   -38,   -38,   -38,   -38,   -37,   -38,   -38,
+     -38,    -5,    -6
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,    17,    18,    93,    19,    20,    78,   113,   104,   105,
-      21,    37,    38,    69,    70,    59,    60,    22,   115,    64,
-     101,    23,    24
+      -1,    17,    18,    99,    19,    20,    82,   119,   110,   111,
+      21,    38,    39,    73,    74,    62,    63,    22,   121,    67,
+     107,    23,    24
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -711,108 +726,114 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      36,    27,    71,    44,    76,    77,    28,    39,    56,    57,
-      32,    34,    29,    35,     2,     6,     7,     8,     3,     4,
-       5,    25,    36,    30,    26,    31,    61,    62,    63,    72,
-      45,    46,     2,    28,    68,    96,     3,     4,     5,    90,
-      15,    73,    26,    74,    75,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    91,    95,    15,    98,
-     108,   100,    94,    33,   107,   106,    54,    55,    56,    57,
-     109,   111,   112,    16,   110,    97,   117,    43,     0,   116,
-     118,     0,   103,     0,     0,     0,     0,     0,    99,    40,
-      41,     0,     2,     0,   114,     0,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,     0,     0,    13,     0,
-       0,     0,     0,     0,     0,     0,     0,    42,    15,     0,
-       1,    16,     2,     0,     0,     0,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,     0,     0,    13,    47,
-      48,    49,     0,     0,     0,     0,     0,    14,    15,     0,
-       0,    16,     0,     0,     0,    50,    51,    52,    53,    54,
-      55,    56,    57,    47,    48,    49,     0,     0,     0,    58,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,    50,
-      51,    52,    53,    54,    55,    56,    57,    47,    48,    49,
-       0,     0,     0,    65,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    50,    51,    52,    53,    54,    55,    56,
-      57,    47,    48,    49,     0,     0,     0,    66,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,    50,    51,    52,
-      53,    54,    55,    56,    57,    47,    48,    49,     0,     0,
-       0,    92,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    50,    51,    52,    53,    54,    55,    56,    57,     0,
-       0,     0,     2,     0,     0,   102,     3,     4,     5,     0,
-       0,     0,     9,    10,    11,    12,     0,     0,    13,    47,
-      48,    49,     0,     0,     0,     0,     0,     0,    15,     0,
-       0,    16,    47,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,    57,    47,    48,    67,     0,     0,    50,    51,
-      52,    53,    54,    55,    56,    57,    48,     0,     0,    50,
-      51,    52,    53,    54,    55,    56,    57,     0,     0,     0,
-       0,    50,    51,    52,    53,    54,    55,    56,    57
+      37,    75,    45,    29,    80,    81,    32,    35,    26,    36,
+      28,    40,    25,     5,    27,     7,     8,    30,    31,     9,
+      64,    65,    47,    37,    66,    51,    69,    28,    33,    26,
+       5,    46,     7,     8,    76,    72,     9,   102,    15,    77,
+      78,    79,    83,    84,    85,    86,    87,    88,    89,    90,
+      91,    92,    93,    94,    95,    15,    96,    51,    97,   104,
+      34,   100,    56,    57,    58,    59,    60,   106,   101,   112,
+      51,     3,     4,   113,     6,   103,   118,    58,    59,    60,
+     114,   115,    16,   117,   124,   116,   123,    44,   109,   122,
+     105,     0,     0,     0,     0,     0,     0,     0,    41,    42,
+     120,     2,     3,     4,     5,     6,     7,     8,     0,     0,
+       9,    10,    11,     0,     0,    12,    13,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,    43,    15,
+       0,     1,    16,     2,     3,     4,     5,     6,     7,     8,
+       0,     0,     9,    10,    11,     0,     0,    12,    13,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+      14,    15,     2,     0,    16,     5,     0,     7,     8,     0,
+       0,     9,    10,    11,     0,     0,    12,    13,     0,     0,
+       0,     0,     0,     0,     0,    48,    49,     0,     0,     0,
+      15,     0,     0,    16,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    48,    49,     0,     0,     0,
+       0,    61,     0,     0,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    48,    49,     0,     0,     0,
+       0,    68,     0,     0,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    48,    49,     0,     0,     0,
+       0,    70,     0,     0,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    48,    49,     0,     0,     0,
+       0,    98,     0,     0,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    48,    49,     0,     0,     0,
+       0,   108,     0,     0,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    48,    49,    71,     0,     0,
+       0,     0,     0,     0,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    48,     0,     0,     0,     0,
+       0,     0,     0,     0,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    60
 };
 
 static const yytype_int8 yycheck[] =
 {
-      16,     3,    37,     1,    34,    35,    29,    16,    26,    27,
-      12,    13,    35,    15,     3,    10,    11,    12,     7,     8,
-       9,    28,    38,    29,    13,    29,    28,    29,    30,    38,
-      28,    13,     3,    29,    13,    70,     7,     8,     9,    31,
-      29,    28,    13,    28,    28,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    30,    33,    29,    29,
-      13,    30,    64,    34,    30,   100,    24,    25,    26,    27,
-      30,    17,   107,    32,    31,    77,    13,    17,    -1,   113,
-     115,    -1,    98,    -1,    -1,    -1,    -1,    -1,    90,     0,
-       1,    -1,     3,    -1,   110,    -1,     7,     8,     9,    10,
-      11,    12,    13,    14,    15,    16,    -1,    -1,    19,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,    29,    -1,
-       1,    32,     3,    -1,    -1,    -1,     7,     8,     9,    10,
-      11,    12,    13,    14,    15,    16,    -1,    -1,    19,     4,
-       5,     6,    -1,    -1,    -1,    -1,    -1,    28,    29,    -1,
-      -1,    32,    -1,    -1,    -1,    20,    21,    22,    23,    24,
-      25,    26,    27,     4,     5,     6,    -1,    -1,    -1,    34,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    20,
-      21,    22,    23,    24,    25,    26,    27,     4,     5,     6,
-      -1,    -1,    -1,    34,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    20,    21,    22,    23,    24,    25,    26,
-      27,     4,     5,     6,    -1,    -1,    -1,    34,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    20,    21,    22,
-      23,    24,    25,    26,    27,     4,     5,     6,    -1,    -1,
-      -1,    34,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    20,    21,    22,    23,    24,    25,    26,    27,    -1,
-      -1,    -1,     3,    -1,    -1,    34,     7,     8,     9,    -1,
-      -1,    -1,    13,    14,    15,    16,    -1,    -1,    19,     4,
-       5,     6,    -1,    -1,    -1,    -1,    -1,    -1,    29,    -1,
-      -1,    32,     4,     5,     6,    20,    21,    22,    23,    24,
-      25,    26,    27,     4,     5,    30,    -1,    -1,    20,    21,
-      22,    23,    24,    25,    26,    27,     5,    -1,    -1,    20,
-      21,    22,    23,    24,    25,    26,    27,    -1,    -1,    -1,
-      -1,    20,    21,    22,    23,    24,    25,    26,    27
+      16,    38,     1,     9,    36,    37,    12,    13,    31,    15,
+       3,    16,    30,     6,    37,     8,     9,    31,    31,    12,
+      26,    27,     3,    39,    30,    20,    36,     3,     4,    31,
+       6,    30,     8,     9,    39,     3,    12,    74,    31,    30,
+      30,    30,    48,    49,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    31,    33,    20,    32,    31,
+      36,    67,    25,    26,    27,    28,    29,    32,    35,   106,
+      20,     4,     5,    32,     7,    81,   113,    27,    28,    29,
+       3,    32,    34,    15,   121,    33,     3,    17,   104,   119,
+      96,    -1,    -1,    -1,    -1,    -1,    -1,    -1,     0,     1,
+     116,     3,     4,     5,     6,     7,     8,     9,    -1,    -1,
+      12,    13,    14,    -1,    -1,    17,    18,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    30,    31,
+      -1,     1,    34,     3,     4,     5,     6,     7,     8,     9,
+      -1,    -1,    12,    13,    14,    -1,    -1,    17,    18,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      30,    31,     3,    -1,    34,     6,    -1,     8,     9,    -1,
+      -1,    12,    13,    14,    -1,    -1,    17,    18,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    10,    11,    -1,    -1,    -1,
+      31,    -1,    -1,    34,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    10,    11,    -1,    -1,    -1,
+      -1,    36,    -1,    -1,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    10,    11,    -1,    -1,    -1,
+      -1,    36,    -1,    -1,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    10,    11,    -1,    -1,    -1,
+      -1,    36,    -1,    -1,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    10,    11,    -1,    -1,    -1,
+      -1,    36,    -1,    -1,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    10,    11,    -1,    -1,    -1,
+      -1,    36,    -1,    -1,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    10,    11,    32,    -1,    -1,
+      -1,    -1,    -1,    -1,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    10,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     1,     3,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    16,    19,    28,    29,    32,    37,    38,    40,
-      41,    46,    53,    57,    58,    28,    13,    58,    29,    35,
-      29,    29,    58,    34,    58,    58,    40,    47,    48,    57,
-       0,     1,    28,    38,     1,    28,    13,     4,     5,     6,
-      20,    21,    22,    23,    24,    25,    26,    27,    34,    51,
-      52,    58,    58,    58,    55,    34,    34,    30,    13,    49,
-      50,    53,    57,    28,    28,    28,    34,    35,    42,    58,
-      58,    58,    58,    58,    58,    58,    58,    58,    58,    58,
-      31,    30,    34,    39,    58,    33,    53,    58,    29,    58,
-      30,    56,    34,    40,    44,    45,    53,    30,    13,    30,
-      31,    17,    53,    43,    40,    54,    46,    13,    53
+       0,     1,     3,     4,     5,     6,     7,     8,     9,    12,
+      13,    14,    17,    18,    30,    31,    34,    39,    40,    42,
+      43,    48,    55,    59,    60,    30,    31,    37,     3,    60,
+      31,    31,    60,     4,    36,    60,    60,    42,    49,    50,
+      59,     0,     1,    30,    40,     1,    30,     3,    10,    11,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    36,    53,    54,    60,    60,    60,    57,    36,    36,
+      36,    32,     3,    51,    52,    55,    59,    30,    30,    30,
+      36,    37,    44,    60,    60,    60,    60,    60,    60,    60,
+      60,    60,    60,    60,    60,    60,    33,    32,    36,    41,
+      60,    35,    55,    60,    31,    60,    32,    58,    36,    42,
+      46,    47,    55,    32,     3,    32,    33,    15,    55,    45,
+      42,    56,    48,     3,    55
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    36,    37,    37,    37,    37,    37,    37,    37,    38,
-      38,    38,    39,    40,    40,    40,    42,    43,    41,    44,
-      44,    45,    45,    46,    47,    47,    48,    48,    49,    49,
-      50,    50,    51,    51,    52,    52,    53,    53,    53,    53,
-      53,    54,    53,    53,    55,    56,    53,    53,    57,    57,
-      58,    58,    58,    58,    58,    58,    58,    58,    58,    58,
-      58,    58,    58,    58,    58,    58,    58,    58
+       0,    38,    39,    39,    39,    39,    39,    39,    39,    40,
+      40,    40,    41,    42,    42,    42,    44,    45,    43,    46,
+      46,    47,    47,    48,    49,    49,    50,    50,    51,    51,
+      52,    52,    53,    53,    54,    54,    55,    55,    55,    55,
+      55,    55,    56,    55,    55,    57,    58,    55,    55,    59,
+      59,    60,    60,    60,    60,    60,    60,    60,    60,    60,
+      60,    60,    60,    60,    60,    60,    60,    60,    60,    60,
+      60
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -821,10 +842,11 @@ static const yytype_int8 yyr2[] =
        0,     2,     3,     3,     2,     3,     2,     2,     1,     1,
        1,     1,     0,     1,     1,     1,     0,     0,     8,     0,
        1,     2,     4,     4,     0,     1,     1,     2,     0,     1,
-       1,     2,     1,     3,     0,     1,     1,     2,     3,     2,
-       4,     0,     9,     6,     0,     0,     7,     3,     5,     3,
-       4,     3,     3,     3,     3,     1,     3,     3,     3,     3,
-       3,     3,     3,     3,     2,     1,     1,     1
+       1,     2,     1,     3,     0,     1,     1,     2,     3,     3,
+       2,     4,     0,     9,     6,     0,     0,     7,     3,     5,
+       3,     4,     3,     3,     3,     3,     3,     1,     3,     3,
+       3,     3,     3,     3,     3,     3,     3,     2,     1,     1,
+       1
 };
 
 
@@ -1520,66 +1542,69 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 105 "ex1.y"
+#line 123 "ex1.y"
                         {yyerrok;}
-#line 1526 "ex1.tab.c"
+#line 1548 "ex1.tab.c"
     break;
 
   case 3:
-#line 106 "ex1.y"
+#line 124 "ex1.y"
                         {yyerrok; }
-#line 1532 "ex1.tab.c"
+#line 1554 "ex1.tab.c"
     break;
 
   case 4:
-#line 107 "ex1.y"
+#line 125 "ex1.y"
                         {yyerrok; }
-#line 1538 "ex1.tab.c"
+#line 1560 "ex1.tab.c"
     break;
 
   case 12:
-#line 121 "ex1.y"
+#line 139 "ex1.y"
 {
 	unsigned int number = new_label_number();
 	(yyval.entier) = number;
 	printf("; If No %d\n"
 	"\tpop ax\n"
 	"\tconst bx,0\n"
-	"\tconst cx,if:test:neg:%d\n"
+	"\tconst cx,"IF_TEST_NEG":%d\n"
 	"\tcmp ax,bx\n"
 	"\tjmpc cx\n"
 	, number, number);
 }
-#line 1554 "ex1.tab.c"
+#line 1576 "ex1.tab.c"
     break;
 
   case 13:
-#line 134 "ex1.y"
+#line 152 "ex1.y"
                 { (yyval.entier) = BOOL_T; }
-#line 1560 "ex1.tab.c"
+#line 1582 "ex1.tab.c"
     break;
 
   case 14:
-#line 135 "ex1.y"
+#line 153 "ex1.y"
                 { (yyval.entier) = INT_T; }
-#line 1566 "ex1.tab.c"
+#line 1588 "ex1.tab.c"
     break;
 
   case 15:
-#line 136 "ex1.y"
+#line 154 "ex1.y"
                 { (yyval.entier) = VOID_T; }
-#line 1572 "ex1.tab.c"
+#line 1594 "ex1.tab.c"
     break;
 
   case 16:
-#line 141 "ex1.y"
+#line 159 "ex1.y"
                 {
 
-			 
+			// Vérifier qu'aucune fontion n'est en analyse
+				if (funDef != NULL) {
+					fail_with("Erreur syntaxique: définition de fonction dans l'espace locale de %s() \n\n", funDef->name);
+				}
 			// Vérification de l'unicité de l'identifiant de la fonction
 				funDef = search_symbol_table((yyvsp[0].chaine));
 				if (funDef != NULL) {
-					fail_with("ID existe deja\n");
+					fail_with("Erreur: %s() est déjà défini\n\n", (yyvsp[0].chaine));
 				}
 
 			/* Ajout de l'identifiant de la fontion dans la
@@ -1596,13 +1621,13 @@ yyreduce:
 					"\tjmp dx\n\n",
 				funDef->name,
 				funDef->name);
-				
+
 			}
-#line 1602 "ex1.tab.c"
+#line 1627 "ex1.tab.c"
     break;
 
   case 17:
-#line 165 "ex1.y"
+#line 186 "ex1.y"
                                         {
 					printf(":"FUN_DEF":%s\n", (yyvsp[-4].chaine));
 
@@ -1622,11 +1647,11 @@ yyreduce:
 				funDef->name);
 
 			}
-#line 1626 "ex1.tab.c"
+#line 1651 "ex1.tab.c"
     break;
 
   case 18:
-#line 183 "ex1.y"
+#line 204 "ex1.y"
                                     {
 
 			/* Fin de traitement de la définition de la fonction donc
@@ -1641,28 +1666,30 @@ yyreduce:
 				funDef->name);
 				funDef = NULL;
 			}
-#line 1645 "ex1.tab.c"
+#line 1670 "ex1.tab.c"
     break;
 
   case 19:
-#line 200 "ex1.y"
+#line 221 "ex1.y"
                         { (yyval.entier) = 0; }
-#line 1651 "ex1.tab.c"
+#line 1676 "ex1.tab.c"
     break;
 
   case 20:
-#line 201 "ex1.y"
+#line 222 "ex1.y"
                         { (yyval.entier) = (yyvsp[0].entier); }
-#line 1657 "ex1.tab.c"
+#line 1682 "ex1.tab.c"
     break;
 
   case 21:
-#line 206 "ex1.y"
+#line 227 "ex1.y"
                                 {
 					// Vérification de l'unicité de l'identifiant de l'argument
 						symbol_table_entry* funArg = search_symbol_table((yyvsp[0].chaine));
 						if (funArg != NULL){
-							fail_with("ID existe deja\n");
+							fail_with(
+								"Erreur: %s est déjà défini dans %s()\n\n",
+							(yyvsp[0].chaine), funDef->name);
 						}
 
 					/* Ajout de l'identifiant de l'argument dans la
@@ -1698,16 +1725,17 @@ yyreduce:
 						funDef->name, funDef->nParams
 						);
 					}
-#line 1702 "ex1.tab.c"
+#line 1729 "ex1.tab.c"
     break;
 
   case 22:
-#line 247 "ex1.y"
+#line 270 "ex1.y"
                         {
 					// Vérification de l'unicité de l'identifiant de l'argument
 						symbol_table_entry* funArg = search_symbol_table((yyvsp[0].chaine));
 						if (funArg != NULL){
-							fail_with("ID existe deja\n");
+							fail_with("Erreur: %s est déjà défini dans %s()\n\n",
+							(yyvsp[0].chaine), funDef->name);
 						}
 
 					/* Ajout de l'identifiant de l'argument dans la
@@ -1744,240 +1772,348 @@ yyreduce:
 						funDef->name, funDef->nParams
 						);
 					}
-#line 1748 "ex1.tab.c"
+#line 1776 "ex1.tab.c"
     break;
 
   case 23:
-#line 291 "ex1.y"
+#line 315 "ex1.y"
                         {
+	 					// Libérer les définitions de varibles locales
+						// de la table des symbolse
 							for (int i = 0; i < (yyvsp[-2].entier); i++) {
 								free_first_symbol_table_entry();
 							}
 							(yyval.entier) = (yyvsp[-2].entier) + (yyvsp[-1].entier);
 						}
-#line 1759 "ex1.tab.c"
-    break;
-
-  case 24:
-#line 300 "ex1.y"
-                        { (yyval.entier) = 0; }
-#line 1765 "ex1.tab.c"
-    break;
-
-  case 25:
-#line 301 "ex1.y"
-                        { (yyval.entier) = (yyvsp[0].entier); }
-#line 1771 "ex1.tab.c"
-    break;
-
-  case 26:
-#line 305 "ex1.y"
-                        { (yyval.entier) = 1; }
-#line 1777 "ex1.tab.c"
-    break;
-
-  case 27:
-#line 306 "ex1.y"
-                { (yyval.entier) = (yyvsp[-1].entier) + 1; }
-#line 1783 "ex1.tab.c"
-    break;
-
-  case 28:
-#line 310 "ex1.y"
-                        { (yyval.entier) = 0; }
 #line 1789 "ex1.tab.c"
     break;
 
-  case 29:
-#line 311 "ex1.y"
-                        { (yyval.entier) = (yyvsp[0].entier); }
+  case 24:
+#line 326 "ex1.y"
+                        { (yyval.entier) = 0; }
 #line 1795 "ex1.tab.c"
     break;
 
-  case 30:
-#line 315 "ex1.y"
-                        { (yyval.entier) = 1; }
+  case 25:
+#line 327 "ex1.y"
+                        { (yyval.entier) = (yyvsp[0].entier); }
 #line 1801 "ex1.tab.c"
     break;
 
-  case 31:
-#line 316 "ex1.y"
-                { (yyval.entier) = (yyvsp[-1].entier) +1; }
+  case 26:
+#line 331 "ex1.y"
+                        { (yyval.entier) = 1; }
 #line 1807 "ex1.tab.c"
     break;
 
-  case 32:
-#line 323 "ex1.y"
-                        { (yyval.entier) = 1;  }
+  case 27:
+#line 332 "ex1.y"
+                { (yyval.entier) = (yyvsp[-1].entier) + 1; }
 #line 1813 "ex1.tab.c"
     break;
 
-  case 33:
-#line 324 "ex1.y"
-                        { (yyval.entier) = (yyvsp[-2].entier) + 1;}
+  case 28:
+#line 336 "ex1.y"
+                        { (yyval.entier) = 0; }
 #line 1819 "ex1.tab.c"
     break;
 
-  case 34:
-#line 328 "ex1.y"
-                        { (yyval.entier) = 0; }
+  case 29:
+#line 337 "ex1.y"
+                        { (yyval.entier) = (yyvsp[0].entier); }
 #line 1825 "ex1.tab.c"
     break;
 
-  case 35:
-#line 329 "ex1.y"
-                        { (yyval.entier) = (yyvsp[0].entier); }
+  case 30:
+#line 341 "ex1.y"
+                        { (yyval.entier) = 1; }
 #line 1831 "ex1.tab.c"
     break;
 
-  case 36:
-#line 334 "ex1.y"
-                                { (yyval.entier) = (yyvsp[0].entier); }
+  case 31:
+#line 342 "ex1.y"
+                { (yyval.entier) = (yyvsp[-1].entier) +1; }
 #line 1837 "ex1.tab.c"
     break;
 
+  case 32:
+#line 349 "ex1.y"
+                        { (yyval.entier) = 1;  }
+#line 1843 "ex1.tab.c"
+    break;
+
+  case 33:
+#line 350 "ex1.y"
+                        { (yyval.entier) = (yyvsp[-2].entier) + 1;}
+#line 1849 "ex1.tab.c"
+    break;
+
+  case 34:
+#line 354 "ex1.y"
+                        { (yyval.entier) = 0; }
+#line 1855 "ex1.tab.c"
+    break;
+
+  case 35:
+#line 355 "ex1.y"
+                        { (yyval.entier) = (yyvsp[0].entier); }
+#line 1861 "ex1.tab.c"
+    break;
+
+  case 36:
+#line 360 "ex1.y"
+                                { (yyval.entier) = (yyvsp[0].entier); }
+#line 1867 "ex1.tab.c"
+    break;
+
   case 37:
-#line 336 "ex1.y"
+#line 362 "ex1.y"
                         {
+					// Si espace global erreur
+					// Sinon si analyse de fonction en cours et
+					// type de retour de f() != VOID erreur
 						if (funDef == NULL) {
-							fail_with("Espace global, retour de valeur impossible !");
+							fail_with(
+								"Erreur: espace global, retour de valeur impossible !\n\n");
 								(yyval.entier) = ERR;
 						} else {
 							if (funDef->desc[0] != VOID_T) {
-								fail_with("Types de retour incompatible !");
+								fail_with(
+									"Erreur: type de retour incompatible:\n"
+									"\t%s %s() retourne void!\n\n",
+								(funDef->desc[0] == INT_T ? "int" : "bool" ), funDef->name);
 								(yyval.entier) = ERR;
 							} else {
 								(yyval.entier) = VOID_T;
 							}
 						}
 					}
-#line 1855 "ex1.tab.c"
+#line 1892 "ex1.tab.c"
     break;
 
   case 38:
-#line 350 "ex1.y"
-                        {
-						if ((yyvsp[-1].entier) != ERR) {
-							if (funDef == NULL) {
-								fail_with("Espace global, retour de valeur impossible !");
-								(yyval.entier) = ERR;
-							} else {
-								if ((funDef->desc[0] == INT_T && (yyvsp[-1].entier) != T_INT)
-									|| (funDef->desc[0] == BOOL_T && (yyvsp[-1].entier) != T_BOOL)
-									|| (funDef->desc[0] == VOID_T)) {
-										fail_with("Types de retour incompatible !");
-										(yyval.entier) = ERR;
-								} else {
-									(yyval.entier) = (yyvsp[-1].entier);
-								}
-							}
-						}
-					}
-#line 1877 "ex1.tab.c"
+#line 383 "ex1.y"
+                                {
+// Si espace global erreur
+// Sinon si analyse de fonction en cours et
+// type de retour de f() != VOID erreur
+	if (funDef == NULL) {
+		fail_with(
+			"Erreur: espace global, retour de valeur impossible !\n\n");
+			(yyval.entier) = ERR;
+	} else {
+		if (funDef->desc[0] != VOID_T) {
+			fail_with(
+				"Erreur: type de retour incompatible:\n"
+				"\t%s %s() retourne void!\n\n",
+			(funDef->desc[0] == INT_T ? "int" : "bool" ), funDef->name);
+			(yyval.entier) = ERR;
+		} else {
+			(yyval.entier) = VOID_T;
+		}
+	}
+}
+#line 1917 "ex1.tab.c"
     break;
 
   case 39:
-#line 368 "ex1.y"
-                                {
- 					if ((yyvsp[-1].entier) != ERR){
- 						printf("\tpop\n");
- 					}
- 				}
-#line 1887 "ex1.tab.c"
+#line 404 "ex1.y"
+                        {
+					// Si espace global erreur
+					// Sinon si analyse de fonction en cours et
+					// type de retour de f() != type de expr erreur
+						if (funDef == NULL) {
+							fail_with(
+								"Erreur: espace global, retour de valeur impossible !\n\n");
+								(yyval.entier) = ERR;
+						} else {
+							if (   (funDef->desc[0] == INT_T && (yyvsp[-1].entier) != T_INT)
+								|| (funDef->desc[0] == BOOL_T && (yyvsp[-1].entier) != T_BOOL)
+								|| (funDef->desc[0] == VOID_T)) {
+									(yyval.entier) = ERR;
+									fail_with(
+										"Erreur: type de retour incompatible:\n"
+										"\t%s %s() retourne %s!\n\n",
+									(funDef->desc[0] == INT_T ? "int" : (funDef->desc[0] == BOOL_T ? "bool" : "void") ),
+									funDef->name,
+									((yyvsp[-1].entier) == T_INT ? "int" : "bool"));
+							} else {
+								(yyval.entier) = (yyvsp[-1].entier);
+							}
+						}
+
+					}
+#line 1947 "ex1.tab.c"
     break;
 
   case 40:
-#line 373 "ex1.y"
-                                {
-					symbol_table_entry* ste = search_symbol_table((yyvsp[-3].chaine));
-					if(ste == NULL){
-						fail_with("ID n'existe pas");
-					}
-					if( (ste->desc[0] == INT_T && (yyvsp[-1].entier) != T_INT) || (ste->desc[0] == BOOL_T && (yyvsp[-1].entier) != T_BOOL)){
-						fail_with("Type incompatible");
-					}
-					printf("; Code affectation variable %s\n"
-					"\tpop ax\n"
-					"\tconst bx,"VAR_GLOBAL":%s\n"
-					"\tstorew ax,bx\n",
-					 ste->name, ste->name);
-				}
-#line 1906 "ex1.tab.c"
+#line 430 "ex1.y"
+                                        {
+							if ((yyvsp[-1].entier) != ERR){
+								printf(
+									"; Résultat de expr non évalué"
+									"\tpop\n"
+								);
+							}
+						}
+#line 1960 "ex1.tab.c"
     break;
 
   case 41:
-#line 388 "ex1.y"
-                                   {
-					printf(";si if No %d vrai et instr executé\n"
-					"\tconst ax,if:fin:%d\n"
-					"\tjmp ax\n\n"
-					";si if No %d est faux\n"
-					":if:test:neg:%d\n"
-					, (yyvsp[-3].entier), (yyvsp[-3].entier), (yyvsp[-3].entier), (yyvsp[-3].entier));
-				}
-#line 1919 "ex1.tab.c"
+#line 438 "ex1.y"
+                                {
+					// Vérifier si ID a été déclaréet est une variable, sinon erreur
+					// Générer le cde d'affectation d'une variable
+							symbol_table_entry* var = search_symbol_table((yyvsp[-3].chaine));
+
+							if (var == NULL) {
+								fail_with("Erreur: variable %s non déclaré !\n\n", (yyvsp[-3].chaine));
+								(yyval.entier) = ERR;
+							} else if ( var->class == FUNCTION) {
+								fail_with("Erreur: %s() est une fonction !\n\n", (yyvsp[-3].chaine));
+								(yyval.entier) = ERR;
+							}
+
+							if ( (var->desc[0] == INT_T && (yyvsp[-1].entier) != T_INT)
+								|| (var->desc[0] == BOOL_T && (yyvsp[-1].entier) != T_BOOL)) {
+						// Vérification de la compatibilité des types
+								fail_with(
+									"Erreur: type incompatible\n"
+									"\t%s est de type %s, affectation de %s\n\n", 
+									(yyvsp[-3].chaine), ((var->desc[0] == INT_T) ? "int" : "bool"),
+									(((yyvsp[-1].entier) == T_INT) ? "int" : "bool"));
+
+									(yyval.entier) = ERR;
+							}
+
+							if (funDef == NULL) {
+						// Espace global, la variable est donc globale
+								printf(
+									"; Code affectation variable globale %s\n"
+									"\tpop ax\n"
+									"\tconst bx,"VAR_GLOBAL":%s\n"
+									"\tstorew ax,bx\n",
+								(yyvsp[-3].chaine), (yyvsp[-3].chaine));
+							} else {
+						// Analyse d'une fonction en cours, la variable est locale
+								printf(
+									"; Code affectation variable locale %s de %s\n"
+									"\tpop ax\n"
+									"\tconst bx,"VAR_LOCAL":%s:%s\n"
+									"\tstorew ax,bx\n",
+								(yyvsp[-3].chaine), funDef->name,
+								funDef->name, (yyvsp[-3].chaine));
+							}
+
+							(yyval.entier) = (yyvsp[-1].entier);
+						}
+#line 2011 "ex1.tab.c"
     break;
 
   case 42:
-#line 395 "ex1.y"
+#line 485 "ex1.y"
                                         {
-						if ( (yyvsp[-6].entier) != T_BOOL ) { fail_with("condition du if non booleenne \n"); }
-						printf(";fin du if No %d\n"
-						":if:fin:%d\n"
-						, (yyvsp[-5].entier), (yyvsp[-5].entier));
-					}
-#line 1930 "ex1.tab.c"
+				// Else est vrai
+					printf(
+						"; Si [else (expr)] == vrai \n"
+						"\tconst ax,"IF_FIN":%d\n"
+						"\tjmp ax\n"
+						"; Saut à "IF_FIN"\n\n"
+						"; Si [else (expr)] == faux\n"
+						":"IF_TEST_NEG":%d\n",
+					(yyvsp[-3].entier),
+					(yyvsp[-3].entier));
+
+							}
+#line 2029 "ex1.tab.c"
     break;
 
   case 43:
-#line 401 "ex1.y"
-                              {
-				if ( (yyvsp[-3].entier) != T_BOOL ) { fail_with("condition du if non booleenne \n"); }
-				printf(";si if No %d est faux\n"
-				":if:test:neg:%d\n"
-				, (yyvsp[-2].entier), (yyvsp[-2].entier));
-			}
-#line 1941 "ex1.tab.c"
+#line 497 "ex1.y"
+                                                                {
+										if ( (yyvsp[-6].entier) != T_BOOL ) {
+											fail_with(
+												"Erreur: test de condition non booléeene dans\n"
+												"\t if (expr)\n\n"
+											);
+										}
+									// Fin ELSE
+										printf(
+											"; Fin else %d\n"
+											":"IF_FIN":%d\n"
+										, (yyvsp[-5].entier), (yyvsp[-5].entier));
+									}
+#line 2047 "ex1.tab.c"
     break;
 
   case 44:
-#line 407 "ex1.y"
-           {
-	unsigned int number = new_label_number();
-	(yyval.entier) = number;
-	printf(":debut:while:%u\n",number);
-	}
-#line 1951 "ex1.tab.c"
+#line 510 "ex1.y"
+                                        {
+										if ( (yyvsp[-3].entier) != T_BOOL ) { 
+											fail_with(
+												"Erreur: test de condition non booléeene dans\n"
+												"\t if (expr)\n\n"
+											);
+										}
+									// ELSE_FAUX
+										printf(
+											"; Si [else (expr)] == faux\n"
+											":"IF_TEST_NEG":%d\n",
+										(yyvsp[-2].entier));
+									}
+#line 2065 "ex1.tab.c"
     break;
 
   case 45:
-#line 411 "ex1.y"
-             {
-		printf("; while No %u\n"
-		"\tpop ax\n"
-		"\tconst bx,0\n"
-		"\tconst cx,fin:while:%u\n"
-		"\tcmp ax,bx\n"
-		"\tjmpc cx\n"
-		, (yyvsp[-1].entier), (yyvsp[-1].entier));
-				}
-#line 1965 "ex1.tab.c"
+#line 523 "ex1.y"
+                                                                {
+										unsigned int labelNumber = new_label_number();
+										(yyval.entier) = labelNumber;
+										printf(":"DEBUT_WHILE":%u\n",labelNumber);
+									}
+#line 2075 "ex1.tab.c"
     break;
 
   case 46:
-#line 419 "ex1.y"
-                                          {
-						if( (yyvsp[-3].entier) != T_BOOL ){ fail_with("condition non booléenne\n");}
-						printf("; fin tour de boucle\n"
-						"\tconst cx,debut:while:%u\n"
-						"\tjmp cx\n\n"
-						":fin:while:%u\n", (yyvsp[-4].entier), (yyvsp[-4].entier));
-							}
-#line 1977 "ex1.tab.c"
+#line 527 "ex1.y"
+                                                                               {
+										printf(
+											"; Code cible WHILE_FAUX:%d\n" 
+											"\tpop ax\n"
+											"\tconst bx,0\n"
+											"\tconst cx,"WHILE_FIN":%d\n"
+										// Test (expr == faux)
+											"\tcmp ax,bx\n"
+											"\tjmpc cx\n"
+											"; Si (expr == faux) saut à "WHILE_FIN"\n",
+										(yyvsp[-1].entier), (yyvsp[-1].entier));
+									}
+#line 2092 "ex1.tab.c"
     break;
 
   case 47:
-#line 426 "ex1.y"
+#line 538 "ex1.y"
+                                                                                    {
+										
+									// WHILE_VRAI
+									// Vérifier si expr est booléen
+										if ( (yyvsp[-3].entier) != T_BOOL ) { 
+											fail_with(
+												"Erreur: test de condition non booléeene dans\n"
+												"\t while (expr) { ... }\n\n"
+											);
+										}
+										printf("; Fin tour de boucle\n"
+										"\tconst cx,"DEBUT_WHILE":%u\n"
+										"\tjmp cx\n\n"
+									// WHILE_FIN
+										":"WHILE_FIN":%u\n", (yyvsp[-4].entier), (yyvsp[-4].entier));
+									}
+#line 2113 "ex1.tab.c"
+    break;
+
+  case 48:
+#line 554 "ex1.y"
                                 {
 					if ((yyvsp[-1].entier) == T_INT) {
  						printf("; Pour afficher la valeur calculée, qui se trouve normalement en sommet de pile\n"
@@ -2021,11 +2157,11 @@ yyreduce:
 						buffer2);
  					}
 				}
-#line 2025 "ex1.tab.c"
+#line 2161 "ex1.tab.c"
     break;
 
-  case 48:
-#line 472 "ex1.y"
+  case 49:
+#line 600 "ex1.y"
                         {
 	 					// Vérifier la comatibilité des types
 						// Ajouter l'ID dans la table des symboles en fontion
@@ -2036,7 +2172,9 @@ yyreduce:
 								
 								symbol_table_entry* var = search_symbol_table((yyvsp[-3].chaine));
 								if (var != NULL){
-									fail_with("ID existe deja\n");
+									fail_with(
+										"Erreur: %s est déjà déclaré\n\n",
+									(yyvsp[-3].chaine));
 								}
 								
 								var = new_symbol_table_entry((yyvsp[-3].chaine));
@@ -2085,22 +2223,41 @@ yyreduce:
 
 							} else {
 								(yyval.entier) = ERR;
-								fail_with("Type imcompatible !");
+
+								if ((yyvsp[-4].entier) == VOID_T) {
+									fail_with(
+									"Erreur syntaxique: déclaration de variable incorrecte\n"
+									"\tvoid  %s;\n\n", (yyvsp[-3].chaine));
+								} else {
+									fail_with(
+										"Erreur: type incompatible\n"
+										"\t%s est de type %s, affectation de %s\n\n", 
+										(yyvsp[-4].entier), (((yyvsp[-4].entier) == INT_T) ? "int" : "bool"),
+										(((yyvsp[-1].entier) == T_INT) ? "int" : "bool"));
+								}
 							}
 						}
-#line 2092 "ex1.tab.c"
+#line 2241 "ex1.tab.c"
     break;
 
-  case 49:
-#line 534 "ex1.y"
+  case 50:
+#line 675 "ex1.y"
                 {
+						// Vérifier la syntaxe de la déclaration
 						// Ajouter l'ID dans la table des symboles en fontion
 						//  de la portée de la varible
 						// 		* Si analye de definition de fonction variable locale
 						//		* Sinon variable globale
+								if ((yyvsp[-2].entier) == VOID_T) {
+									fail_with(
+									"Erreur syntaxique: déclaration de variable incorrecte\n"
+									"\tvoid  %s;\n\n", (yyvsp[-1].chaine));
+								}
 								symbol_table_entry* var = search_symbol_table((yyvsp[-1].chaine));
 								if (var != NULL){
-									fail_with("ID existe deja\n");
+									fail_with(
+										"Erreur: %s est déjà déclaré\n\n",
+									(yyvsp[-1].chaine));
 								}
 
 								var = new_symbol_table_entry((yyvsp[-1].chaine));
@@ -2131,17 +2288,19 @@ yyreduce:
 
 								(yyval.entier) = ((yyvsp[-2].entier) == INT_T) ? T_INT : T_BOOL;
 						}
-#line 2135 "ex1.tab.c"
+#line 2292 "ex1.tab.c"
     break;
 
-  case 50:
-#line 576 "ex1.y"
+  case 51:
+#line 725 "ex1.y"
                                 {
 						// Vérifation de l'existance de la définition de la fonction
 							symbol_table_entry* fun = search_symbol_table((yyvsp[-3].chaine));
 
 							if (fun == NULL) {
-								fail_with("ID n'existe pas déja\n");
+								fail_with(
+									"Erreur: %s n'est pas déjà déclaré\n\n",
+								(yyvsp[-3].chaine));
 								(yyval.entier) = ERR;
 							}
 
@@ -2170,11 +2329,11 @@ yyreduce:
 								? T_INT
 								: T_BOOL;
 						}
-#line 2174 "ex1.tab.c"
+#line 2333 "ex1.tab.c"
     break;
 
-  case 51:
-#line 610 "ex1.y"
+  case 52:
+#line 761 "ex1.y"
                         {
 						// Vérifier que expr1 et expr2 sont de type int sinon erreur de typage
 						// puis évaluer l'addition
@@ -2188,14 +2347,15 @@ yyreduce:
 
 							(yyval.entier) = T_INT;
 						} else {
+							fail_with("Erreur: erreur arithmétique !\n\n");
 							(yyval.entier) = ERR;
 						}
 					}
-#line 2195 "ex1.tab.c"
+#line 2355 "ex1.tab.c"
     break;
 
-  case 52:
-#line 626 "ex1.y"
+  case 53:
+#line 778 "ex1.y"
                                 {
 						// Vérifier que expr1 et expr2 sont de type int sinon erreur de typage
 						// puis évaluer la soustraction
@@ -2208,14 +2368,15 @@ yyreduce:
 									"\tpush bx\n");
 								(yyval.entier) = T_INT;
 							} else {
+								fail_with("Erreur: erreur arithmétique !\n\n");
 								(yyval.entier) = ERR;
 							}
 						}
-#line 2215 "ex1.tab.c"
+#line 2376 "ex1.tab.c"
     break;
 
-  case 53:
-#line 641 "ex1.y"
+  case 54:
+#line 794 "ex1.y"
                                 {
 						// Vérifier que expr1 et expr2 sont de type int sinon erreur de typage
 						// puis évaluer la multiplication
@@ -2228,14 +2389,15 @@ yyreduce:
 									"\tpush bx\n");
 								(yyval.entier) = T_INT;
 							} else {
+								fail_with("Erreur: erreur arithmétique !\n\n");
 								(yyval.entier) = ERR;
 							}
 						}
-#line 2235 "ex1.tab.c"
+#line 2397 "ex1.tab.c"
     break;
 
-  case 54:
-#line 656 "ex1.y"
+  case 55:
+#line 810 "ex1.y"
                                 {
 						// Vérifier que expr1 et expr2 sont de type int sinon erreur de typage
 						// puis évaluer la division
@@ -2250,14 +2412,41 @@ yyreduce:
 									"\tpush bx\n");
 								(yyval.entier) = T_INT;
 							} else {
+								fail_with("Erreur: erreur arithmétique !\n\n");
 								(yyval.entier) = ERR;
 							}
 						}
-#line 2257 "ex1.tab.c"
+#line 2420 "ex1.tab.c"
     break;
 
-  case 55:
-#line 673 "ex1.y"
+  case 56:
+#line 828 "ex1.y"
+                                {
+						// Vérifier que expr1 et expr2 sont de type int sinon erreur de typage
+						// puis évaluer la modulo
+							if ((yyvsp[-2].entier) == T_INT && (yyvsp[0].entier) == T_INT){
+								printf(
+									"; Debut modulo\n"
+									"\tpop ax\n"
+									"\tpop bx\n"
+									"\tcp cx,bx\n"
+									"\tconst dx,"ERR_DIV_ZERO"\n"
+									"\tdiv bx,ax\n"
+									"\tjmpe dx\n"
+									"\tmul bx,ax\n"
+									"\tsub cx,bx\n"
+									"\tpush cx\n");
+								(yyval.entier) = T_INT;
+							} else {
+								fail_with("Erreur: erreur arithmétique !\n\n");
+								(yyval.entier) = ERR;
+							}
+						}
+#line 2446 "ex1.tab.c"
+    break;
+
+  case 57:
+#line 849 "ex1.y"
                                         {
 							printf(
 								"; Ajout du nombre %d\n"
@@ -2268,17 +2457,17 @@ yyreduce:
 
 							(yyval.entier) = T_INT;
 						}
-#line 2272 "ex1.tab.c"
+#line 2461 "ex1.tab.c"
     break;
 
-  case 56:
-#line 684 "ex1.y"
+  case 58:
+#line 860 "ex1.y"
                                 { (yyval.entier) = (yyvsp[-1].entier); }
-#line 2278 "ex1.tab.c"
+#line 2467 "ex1.tab.c"
     break;
 
-  case 57:
-#line 686 "ex1.y"
+  case 59:
+#line 862 "ex1.y"
                                 {
 						// Vérifier que expr1 et expr2 sont de type bool sinon erreur de typage
 						// Créer un nouveau label pour anticiper la récursivité
@@ -2323,16 +2512,68 @@ yyreduce:
 								(yyval.entier) = T_BOOL;
 							} else {
 								(yyval.entier) = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 								printf("; Fin EQ\n");
 						}
-#line 2332 "ex1.tab.c"
+#line 2520 "ex1.tab.c"
     break;
 
-  case 58:
-#line 735 "ex1.y"
+  case 60:
+#line 911 "ex1.y"
+                                {
+						// Vérifier que expr1 et expr2 sont de type bool sinon erreur de typage
+						// Créer un nouveau label pour anticiper la récursivité
+						// puis évaluer le DIF
+							if ((yyvsp[-2].entier) == (yyvsp[0].entier) && (yyvsp[-2].entier) != ERR) {
+								unsigned int labelNumber = new_label_number();
+								create_label(buffer1, MAXBUF, "%s:%u", DIF_VRAI, labelNumber);
+								create_label(buffer2, MAXBUF, "%s:%u", DIF_FIN, labelNumber);
+
+								printf(
+									"; Debut DIF (%d)\n"
+									"\tpop ax\n"
+									"\tpop bx\n"
+									"\tconst cx,%s\n"
+								// Test (expr1 == expr2)
+									"; Comparaison de expr1 et expr2\n"
+									"\tcmp ax,bx\n"
+									"\tjmpc cx\n"
+									"; Si expr1 == expr2 saut à "DIF_FAUX"\n"
+									"; Si expr1 != expr2 code cible "DIF_VRAI"\n"
+								// DIF_VRAI
+									"; Code cible "DIF_VRAI"\n"
+									"\tconst dx,1\n"
+									"\tpush dx\n"
+									"\tconst cx,%s\n"
+									"\tjmp cx\n\n"
+									";Saut à "DIF_FIN"\n"
+								// DIF_FAUX
+									"; Code cible "DIF_FAUX"\n"
+									":%s\n"
+									"\tconst dx,0\n"
+									"\tpush dx\n"
+								// DIF_FIN
+									"; Code cible "DIF_FIN"\n"
+									":%s\n",
+								labelNumber,
+								buffer1,
+								buffer2,
+								buffer1,
+								buffer2);
+
+								(yyval.entier) = T_BOOL;
+							} else {
+								(yyval.entier) = ERR;
+								fail_with("Erreur: erreur sémentique !\n\n");
+							}
+								printf("; Fin DIF\n");
+						}
+#line 2573 "ex1.tab.c"
+    break;
+
+  case 61:
+#line 960 "ex1.y"
                                 {
 						// Vérifier que expr1 et expr2 sont de type bool sinon erreur de typage
 						// Créer un nouveau label pour anticiper la récursivité
@@ -2377,16 +2618,15 @@ yyreduce:
 								(yyval.entier) = T_BOOL;
 							} else {
 								(yyval.entier) = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 							printf("; Fin INF\n");
 						}
-#line 2386 "ex1.tab.c"
+#line 2626 "ex1.tab.c"
     break;
 
-  case 59:
-#line 784 "ex1.y"
+  case 62:
+#line 1008 "ex1.y"
                         {
 							if ((yyvsp[-2].entier) == T_INT && (yyvsp[0].entier) == T_INT) {
 								unsigned int labelNumber = new_label_number();
@@ -2428,16 +2668,15 @@ yyreduce:
 								(yyval.entier) = T_BOOL;
 							} else {
 								(yyval.entier) = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 							printf("; Fin SUP\n");
 						}
-#line 2437 "ex1.tab.c"
+#line 2676 "ex1.tab.c"
     break;
 
-  case 60:
-#line 830 "ex1.y"
+  case 63:
+#line 1053 "ex1.y"
                                 {
 						// Vérifier que expr1 et expr2 sont de type bool sinon erreur de typage
 						// Créer un nouveau label pour anticiper la récursivité
@@ -2486,16 +2725,15 @@ yyreduce:
 								(yyval.entier) = T_BOOL;
 							} else {
 								(yyval.entier) = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 							printf("; Fin INF_EQ\n");
                       	}
-#line 2495 "ex1.tab.c"
+#line 2733 "ex1.tab.c"
     break;
 
-  case 61:
-#line 883 "ex1.y"
+  case 64:
+#line 1105 "ex1.y"
                                 {
 						// Vérifier que expr1 et expr2 sont de type bool sinon erreur de typage
 						// Créer un nouveau label pour anticiper la récursivité
@@ -2542,16 +2780,15 @@ yyreduce:
 								(yyval.entier) = T_BOOL;
 							} else {
 								(yyval.entier) = ERR;
-								printf("Erreur de sémentique !\n");
-								exit(0);
+								fail_with("Erreur: erreur sémentique !\n\n");
 							}
 							printf(";Fin INF_EQ\n");
                       	}
-#line 2551 "ex1.tab.c"
+#line 2788 "ex1.tab.c"
     break;
 
-  case 62:
-#line 934 "ex1.y"
+  case 65:
+#line 1155 "ex1.y"
                                 {
 						// Vérifier que expr1 et expr2 sont de type bool sinon erreur de typage
 						// puis évaluer le ET (epxr1 * expr2 car true = 1)
@@ -2565,14 +2802,15 @@ yyreduce:
 								(yyval.entier) = T_BOOL;
 							} else {
 								(yyval.entier) = ERR;
+								fail_with("Erreur: erreur arithmétique !\n\n");
 							}
 							printf("; Fin AND\n");
 						}
-#line 2572 "ex1.tab.c"
+#line 2810 "ex1.tab.c"
     break;
 
-  case 63:
-#line 950 "ex1.y"
+  case 66:
+#line 1172 "ex1.y"
                                 {
 						// Vérifier que expr1 et expr2 sont de type bool sinon erreur de typage
 						// Créer un nouveau label pour anticiper la récursivité
@@ -2624,11 +2862,11 @@ yyreduce:
 							}
 							printf("; Fin OR\n");
 						}
-#line 2628 "ex1.tab.c"
+#line 2866 "ex1.tab.c"
     break;
 
-  case 64:
-#line 1001 "ex1.y"
+  case 67:
+#line 1223 "ex1.y"
                                         {
 						// Vérifier que expr est de type bool sinon erreur de typage
 						// Créer un nouveau label pour anticiper la récursivité
@@ -2672,14 +2910,15 @@ yyreduce:
 
 							}else{
 								(yyval.entier) = ERR;
+								fail_with("Erreur: erreur arithmétique !\n\n");
 							}
 							printf("; Fin NEG\n");
 						}
-#line 2679 "ex1.tab.c"
+#line 2918 "ex1.tab.c"
     break;
 
-  case 65:
-#line 1047 "ex1.y"
+  case 68:
+#line 1270 "ex1.y"
                                         {
 						// Ajouter true en pile
 							printf(
@@ -2689,11 +2928,11 @@ yyreduce:
 							1);
 							(yyval.entier) = T_BOOL;
 						}
-#line 2693 "ex1.tab.c"
+#line 2932 "ex1.tab.c"
     break;
 
-  case 66:
-#line 1056 "ex1.y"
+  case 69:
+#line 1279 "ex1.y"
                                         {
 						// Ajouter false en pile
 							printf(
@@ -2703,11 +2942,11 @@ yyreduce:
 							0);
 							(yyval.entier) = T_BOOL;
 						}
-#line 2707 "ex1.tab.c"
+#line 2946 "ex1.tab.c"
     break;
 
-  case 67:
-#line 1065 "ex1.y"
+  case 70:
+#line 1288 "ex1.y"
                                         {
 						// Vérifation de l'existance de la déclaration de la variable
 							symbol_table_entry* var = search_symbol_table((yyvsp[0].chaine));
@@ -2745,14 +2984,15 @@ yyreduce:
 									: T_BOOL;
 							} else {
 						// ID n'est pas une varibale ou un paramètre
+							fail_with("Erreur: id n'est pas une variable ou un paramètre !\n\n");
 								(yyval.entier) = ERR;
 							}
 						}
-#line 2752 "ex1.tab.c"
+#line 2992 "ex1.tab.c"
     break;
 
 
-#line 2756 "ex1.tab.c"
+#line 2996 "ex1.tab.c"
 
       default: break;
     }
@@ -2984,7 +3224,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1106 "ex1.y"
+#line 1330 "ex1.y"
 
 
 void yyerror(char const *s) {

@@ -1,3 +1,1 @@
-void printTrue (int a, int b) { return 1; }
-
-printTrue(1, 2);
+print (5 % 2);

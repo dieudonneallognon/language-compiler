@@ -30,6 +30,8 @@ ID  {UID}|{LID}
 
 "=="							{ return EQ; }
 
+"!="							{ return DIF; }
+
 "<"               { return INF; }
 
 "<="              { return INF_EQ; }

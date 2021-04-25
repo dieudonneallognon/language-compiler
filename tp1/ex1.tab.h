@@ -49,27 +49,28 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NUMBER = 258,
-    AND = 259,
-    EQ = 260,
-    OR = 261,
-    NEG = 262,
+    ID = 258,
+    VOID_LEX = 259,
+    INT_LEX = 260,
+    NUMBER = 261,
+    BOOL_LEX = 262,
     TRUE = 263,
     FALSE = 264,
-    BOOL_LEX = 265,
-    INT_LEX = 266,
-    VOID_LEX = 267,
-    ID = 268,
-    IF = 269,
-    WHILE = 270,
-    PRINT = 271,
-    ELSE = 272,
-    NON_ELSE = 273,
-    RETURN = 274,
-    SUP = 275,
-    SUP_EQ = 276,
-    INF = 277,
-    INF_EQ = 278
+    AND = 265,
+    OR = 266,
+    NEG = 267,
+    IF = 268,
+    WHILE = 269,
+    ELSE = 270,
+    NON_ELSE = 271,
+    PRINT = 272,
+    RETURN = 273,
+    EQ = 274,
+    DIF = 275,
+    SUP = 276,
+    SUP_EQ = 277,
+    INF = 278,
+    INF_EQ = 279
   };
 #endif
 
@@ -77,10 +78,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 84 "ex1.y"
+#line 95 "ex1.y"
  int entier; char* chaine; 
 
-#line 84 "ex1.tab.h"
+#line 85 "ex1.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
